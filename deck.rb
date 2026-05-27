@@ -1,3 +1,7 @@
+# This file defines the Deck class, which represents a deck of cards for the game Set
+# The Deck class initializes a standard deck of 81 unique cards , provides a method to shuffle the deck
+# and allow drawing a specified number of cards from the top of the deck
+
 require_relative 'card'
 class Deck
     attr_reader :cards
@@ -25,7 +29,7 @@ puts "Deck has #{deck.cards.size} cards."
 
 deck.cards.each_with_index {|cards, index| puts "#{index + 1}: #{cards}"}
 
-
+# a simple check if the deck create the cards correct by checking if have any duplicate
 count = 0
 for i in 0...deck.cards.size
     if deck.cards[i] == deck.cards[i + 1]
