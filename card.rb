@@ -1,3 +1,8 @@
+
+
+# initialize a card with shape, color, count, and pattern
+# validate the input parameters to ensure they are valid
+# provide a string representation of the card for easy display
 class Card
     SHAPE = [:trigle, :square, :diamond]
     COLOR = [:red, :green, :yellow]
