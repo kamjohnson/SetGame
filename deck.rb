@@ -1,7 +1,7 @@
 # This file defines the Deck class, which represents a deck of cards for the game Set
 # The Deck class initializes a standard deck of 81 unique cards , provides a method to shuffle the deck
 # and allow drawing a specified number of cards from the top of the deck
-
+# Created 5/27  By Hongle Chen
 require_relative 'card'
 class Deck
     attr_reader :cards
