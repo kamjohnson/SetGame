@@ -4,8 +4,9 @@
 # validate the input parameters to ensure they are valid
 # provide a string representation of the card for easy display
 class Card
-    SHAPE = [:trigle, :square, :diamond]
-    COLOR = [:red, :green, :yellow]
+    # updated shape and color 5/27 Hongle Chen
+    SHAPE = [:squiggle, :oval, :diamond]
+    COLOR = [:red, :green, :purple]
     NUMBER = [1, 2, 3]
     PATTERN = [:solid, :striped, :open]
 
