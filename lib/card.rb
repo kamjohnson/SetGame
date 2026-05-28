@@ -1,5 +1,6 @@
 
 # create 5/27 by Hongle Chen
+# Edited on 5/27/27 by Michael Cintron - Moved to lib folder
 # initialize a card with shape, color, count, and pattern
 # validate the input parameters to ensure they are valid
 # provide a string representation of the card for easy display
