@@ -7,7 +7,7 @@ require_relative 'deck'
 class Board
   attr_reader :visible_cards, :pending_cards
 
-  def intialize 
+  def initialize(deck) 
     @visible_cards = deck.draw(12)
     @pending_cards = []
   end 
