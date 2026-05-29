@@ -1,11 +1,14 @@
 # File created 5/28/26 by Denis Zotaj
 # The Board class file is used for the playing table for the game
 # This deals with the board displaying a set of 12 visible cards 
+require_relative 'card'
+require_relative 'deck'
+
 class Board
   attr_reader :visible_cards, :pending_cards
 
   def intialize 
-    @visible_cards = []
+    @visible_cards = deck.draw(12)
     @pending_cards = []
   end 
 
@@ -16,11 +19,9 @@ class Board
         end
     end
     
-    def get_selection
-        puts "\nEnter the numbers of 3 cards you want to select (e.g., 1, 2, 3):"
-        input = gets.chomp
-
-        selected_cards = input.split(',').map {|num| num.strip.to_i - 1}
-        return selected_cards
+    def replace_cards(set_cards, deck)
+        @visible_cards.reject! {|card| set_cards.include?(card)}
+        new_cards = deck.draw(3)
+        @visible_cards.concat(new_cards) unless new_cards.empty?
     end
 end
