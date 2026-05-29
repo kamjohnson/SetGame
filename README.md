@@ -2,7 +2,7 @@
 CSE3901 - Summer 2026
 
 # Execution instructions
-
+    Run ```ruby main.rb``` in the lib directory
 # Managers
 ## Overall Project Manager: Kameron Johnson
 ## Meeting Manger: Michael Cintron 
