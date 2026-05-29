@@ -22,6 +22,7 @@ class GameEnvironment
 
   # Created 5/25/2026 by Kameron Johnson
   # Modified 5/28/2026 by Michael Cintron - corrected shuffle! call
+  # Starts the game by shuffling the deck and setting up the board, changes state to midgame.
   def start_game
     return if @state == :midgame
     @state = :midgame
