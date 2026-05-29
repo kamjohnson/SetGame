@@ -13,7 +13,7 @@ class Card
 
     attr_reader :shape, :color, :number, :pattern
 
-
+    # Created 5/27  By Hongle Chen
     def initialize(shape, color, number, pattern)
 
         raise ArgumentError, "Invalid shape" unless SHAPE.include?(shape)
@@ -25,7 +25,7 @@ class Card
         @number = number
         @pattern = pattern
     end
-
+    # Created 5/27  By Hongle Chen
     def to_s
         "#{number} #{color} #{pattern} #{shape}"
     end
