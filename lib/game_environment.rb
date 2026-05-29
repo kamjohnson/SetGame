@@ -16,8 +16,7 @@ class GameEnvironment
     @board = Board.new
     @players = []
     @validator = SetValidator.new
-    @state = :pregame
-    @mode = nil
+    @state, @mode = :pregame, nil
   end
 
   # Created 5/25/2026 by Kameron Johnson
