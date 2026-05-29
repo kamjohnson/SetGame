@@ -21,11 +21,11 @@ class GameEnvironment
   end
 
   # Created 5/25/2026 by Kameron Johnson
-  # 
+  # Modified 5/28/2026 by Michael Cintron - corrected shuffle! call
   def start_game
     return if @state == :midgame
     @state = :midgame
-    @deck.shuffle
+    @deck.shuffle!
     @board.setup(@deck)
   end
   
