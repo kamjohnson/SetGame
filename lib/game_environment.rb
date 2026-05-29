@@ -13,7 +13,7 @@ class GameEnvironment
   attr_reader :state, :mode
   def initialize
     @deck = Deck.new
-    @board = Board.new
+    @board = Board.new @deck
     @players = []
     @validator = SetValidator.new
     @state, @mode = :pregame, nil
@@ -25,8 +25,17 @@ class GameEnvironment
   def start_game
     return if @state == :midgame
     @state = :midgame
-    @deck.shuffle!
-    @board.setup(@deck)
+    @deck.shuffle!    
+    #@board.setup(@deck)  # this method does not exist
+    while @state == :midgame
+      puts "Drawing 3 cards..."
+      cards = @deck.draw(3)
+      puts cards
+      setVali = SetValidator.new
+      isSet = setVali.validateCards? cards[0], cards[1], cards[2]
+      puts "Are they a set: #{isSet}"
+      @state = :postgame
+    end
   end
   
   # Created 5/26/2026 by Kameron Johnson
