@@ -107,3 +107,42 @@ describe 'validSetAllDifferent' do
         expect(output).to be_truthy
     end
 end
+
+# Created on 5/31/26 by Michael Cintron
+describe 'invalidSetTwoShapesShared' do
+    it 'Return false if all the cards are completely different EXCEPT two cards have the same shape' do
+        setVali = SetValidator.new
+        card0 = Card.new :squiggle, :red, 1, :solid
+        card1 = Card.new :squiggle, :green, 2, :striped
+        card2 = Card.new :diamond, :purple, 3, :open
+        
+        output = setVali.validateCards?(card0, card1, card2)
+        expect(output).to be_falsey
+    end
+end
+
+# Created on 5/31/26 by Michael Cintron
+describe 'validSetTwoPropertiesShared' do
+    it 'Return true if all the cards share shape and color, but all different counts and shading' do
+        setVali = SetValidator.new
+        card0 = Card.new :squiggle, :red, 1, :solid
+        card1 = Card.new :squiggle, :red, 2, :striped
+        card2 = Card.new :squiggle, :red, 3, :open
+        
+        output = setVali.validateCards?(card0, card1, card2)
+        expect(output).to be_truthy
+    end
+end
+
+# Created on 5/31/26 by Michael Cintron
+describe 'validSetThreePropertiesShared' do
+    it 'Return true if all the cards share shape, color, and count, but all different shading' do
+        setVali = SetValidator.new
+        card0 = Card.new :squiggle, :red, 1, :solid
+        card1 = Card.new :squiggle, :red, 1, :striped
+        card2 = Card.new :squiggle, :red, 1, :open
+        
+        output = setVali.validateCards?(card0, card1, card2)
+        expect(output).to be_truthy
+    end
+end

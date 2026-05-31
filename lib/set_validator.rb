@@ -1,19 +1,22 @@
-# File created 5/27/26 by Michael Cintron
-# File editied 5/28/26 by Michael Cintron - Verifying entire card, not just shape
+=begin
+File created 5/27/26 by Michael Cintron
+File edited 5/28/26 by Michael Cintron - Verifying entire card, not just shape
+File edited 5/31/26 by Michael Cintron - made validateProperty? more terse
+=end
 
 class SetValidator
     SHAPES = [:squiggle, :oval, :diamond]
 
     # Created 5/27/26 by Michael Cintron
     # Edited 5/28/26 by Michael Cintron - Made more terse and renamed to be for all properties
+    # Edited 5/31/26 by Michael Cintron - Made more terse
     # Method that checks if the given properties would violate a set.
     # 
     # @param [symbol] prop0, prop1, prop2 The three given shapes
     # 
     # return [true] if all the properties are the same OR if they are all different
     def validateProperty? prop0, prop1, prop2
-        numUniq = [prop0, prop1, prop2].uniq.length
-        return true if numUniq != 2
+        [prop0, prop1, prop2].uniq.length != 2
     end
 
     # Created 5/28/26 by Michael Cintron
