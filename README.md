@@ -2,7 +2,7 @@
 CSE3901 - Summer 2026
 
 # Execution instructions
-
+    Run ```ruby main.rb``` in the lib directory
 # Managers
 ## Overall Project Manager: Kameron Johnson
 ## Meeting Manger: Michael Cintron 
@@ -52,7 +52,28 @@ The meeting notes were essentially our 5/24/26 submission;
     - Created base class diagram
 - Laid out first sprint 
     - end on 5/26/26
-    - 
+
+## 5/28/26
+Goals:
+- Kameron: 
+    -Get everyone to know what they have to do for tonight
+- Hongle: 
+    - Clarify what to submit for tonight
+    - Get classes together enough so that very basic game runs for tonight 
+- Yoo: 
+    - Check on Michael’s progress of SetValidator
+    - Determine what UI we will have
+- Denis: 
+    -Have basic functional UI (just text for now)
+- Michael:
+    - Figure out next sprint
+    - Code review and critique  
+
+- Figuring out how the classes should go together 
+- SetValidator almost done – just needs a bit more work and refactoring 
+- Bit of code review – noted Hongle to move tests to dedicated file 
+- Noted Yoo to move tests to rspec 
+- Most of this meeting was figuring out issues with sharing code via git 
 
 # Use Cases
 -(Kameron) Game mechanics Ending:
@@ -98,5 +119,12 @@ The meeting notes were essentially our 5/24/26 submission;
 - Basic Player Class functionality
     - Define player attributes (username, user id, score) (Joon) 
 - Set up README (Michael) 
+
+## Sprint #2 (End 5/28/26)
+- Begin investigating "Shoes" or another Ruby GUI gem (Kameron)
+- Tie the various methods and classes into the main game class (Kameron)
+- Set up the set validator class (Michael)
+- Create a basic text interface for a user (Yoo and Denis)
+- 
 
 ... continue ...

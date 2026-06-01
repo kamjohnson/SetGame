@@ -18,6 +18,8 @@ class GameEnvironment
   # Created 5/25/2026 by Kameron Johnson
   # Modified 5/31/26 by Michael Cintron - moved deck shuffling here so the board gets
   #   the shuffled deck
+  # Modified 5/31/26 by Michael Cintron - moved deck shuffling here so the board gets
+  #   the shuffled deck
   # Runs automatically when a new GameEnvironment object is created
   attr_reader :state, :mode
   def initialize
@@ -26,6 +28,7 @@ class GameEnvironment
     @board = Board.new @deck
     @players = [Player.new(1, "Player 1")]
     @validator = SetValidator.new
+    @state, @mode = :pregame, nil
     @state, @mode = :pregame, nil
   end
 

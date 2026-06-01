@@ -8,6 +8,8 @@ class Deck
     attr_reader :cards
     # Created 5/27  By Hongle Chen
     def initialize
+        # This line by using product to create 81 unique cards, product is 3x3x3x3,which is use each elements to create cards, and none of it is duplicate
+        # The terse code map put the result from product into card.new, to create 81 cards
         @cards = Card::SHAPE.product(Card::COLOR, Card::NUMBER,Card::PATTERN).map {|shape, color, number, pattern| Card.new(shape, color, number, pattern) }
             
         
