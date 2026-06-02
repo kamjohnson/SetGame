@@ -37,7 +37,7 @@ class GameEnvironment
   # Modified 5/31/26 by Michael Cintron - Moved shuffle! call to initialize
   # Modified 5/31/26 - Replaced test draw with interactive player input loop
   # Modified 6/1/26 by Hongle Chen - Implemented game loop.
-  # Modified 6/1/26 by Michael Cintron - clean up comments.
+  # Modified 6/1/26 by Michael Cintron - clean up comments and moved card validation into its own function
   # Starts the game, then enters the main game loop where the player selects cards or draws.
   def start_game
     return if @state == :midgame
