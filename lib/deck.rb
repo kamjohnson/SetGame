@@ -23,6 +23,21 @@ class Deck
     def draw(number)
         @cards.shift(number)
     end
+    
+    #Created 6/1/2026 by Kameron Johnson
+    def empty?
+        @cards.empty?
+    end
+
+    #Created 6/1/2026 by Kameron Johnson
+    def card_count
+        @cards.length
+    end
+
+    private
+    attr_reader :cards
+
+
 end
 
 

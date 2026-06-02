@@ -48,7 +48,7 @@ class GameEnvironment
       puts "\nScore: #{@players[0].score}"
       puts "Enter 3 card indices (e.g. 1 2 3) to select a set,"
       puts "or enter 'd' to draw 3 more cards (max 18 on board)."
-      puts "Current deck has #{@deck.cards.length} cards left."
+      puts "Current deck has #{@deck.card_count} cards left."
       print "> "
       input = gets.chomp.strip
 
@@ -61,9 +61,9 @@ class GameEnvironment
 
       # Handle draw request
       if input.downcase == 'd'
-        if @board.visible_cards.length >= 18
-          puts "Board already has #{@board.visible_cards.length} cards (max 18). Cannot draw more."
-        elsif @deck.cards.empty?
+        if @board.card_count >= 18
+          puts "Board already has #{@board.card_count} cards (max 18). Cannot draw more."
+        elsif @deck.empty?
           puts "No cards left in the deck to draw."
         else
           new_cards = @deck.draw(3)
@@ -93,11 +93,11 @@ class GameEnvironment
         # remove the selected cards from the board's visible cards if they are valid set
         @board.visible_cards.reject! { |c| selected.include?(c) } 
         # Refill to 12 if deck has cards and board fell below 12
-        while @board.visible_cards.length < 12 && !@deck.cards.empty?
+        while @board.visible_cards.length < 12 && !@deck.empty?
           @board.visible_cards.concat(@deck.draw(3))
         end
         puts "Score: #{@players[0].score}"
-        if @board.visible_cards.empty? && @deck.cards.empty?
+        if @board.visible_cards.empty? && @deck.empty?
           puts "\nNo more cards! Game over. Final score: #{@players[0].score}"
           @state = :postgame
         end

@@ -25,8 +25,8 @@ def handle_menu choice
   game = GameEnvironment.new
   case choice
   when 1 
-    game.mode = :single_player
-    game.single_player_gameplay 
+    game.choose_game_mode(:single_player)
+    game.start_game
     
   when 2
       game.choose_game_mode(:multiplayer)

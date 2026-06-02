@@ -1,6 +1,9 @@
-# File created 5/28/26 by Denis Zotaj
+=begin
+File created 5/28/26 by Denis Zotaj
 # The Board class file is used for the playing table for the game
-# This deals with the board displaying a set of 12 visible cards 
+# This deals with the board displaying a set of 12 visible cards
+# Edited 6/1/2026 by Kameron Johnson - added card_count method and replaced direct calls to visible_cards.length with card_count for better encapsulation
+=end
 require_relative 'card'
 require_relative 'deck'
 
@@ -33,4 +36,16 @@ class Board
         new_cards = deck.draw(3)
         @visible_cards.concat(new_cards) unless new_cards.empty?
     end
-end
+    
+    #Created 6/1/2026 by Kameron Johnson
+    def card_count
+        @visible_cards.length
+    end
+        
+    #Created 6/1/2026 by Kameron Johnson
+     def remove_card(card)
+        @visible_cards.delete(card)
+     end 
+  end
+
+
