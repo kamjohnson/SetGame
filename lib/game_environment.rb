@@ -36,11 +36,13 @@ class GameEnvironment
   # Modified 5/28/2026 by Michael Cintron - corrected shuffle! call
   # Modified 5/31/26 by Michael Cintron - Moved shuffle! call to initialize
   # Modified 5/31/26 - Replaced test draw with interactive player input loop
+  # Modified 6/1/26 by Hongle Chen - Implemented game loop.
+  # Modified 6/1/26 by Michael Cintron - clean up comments.
   # Starts the game, then enters the main game loop where the player selects cards or draws.
   def start_game
     return if @state == :midgame
     @state = :midgame
-    # get user input by hongle chen 6/1/2026
+
     while @state == :midgame
       @board.display_board
       puts "\nScore: #{@players[0].score}"
@@ -51,14 +53,13 @@ class GameEnvironment
       input = gets.chomp.strip
 
       # Handle quit
-      # after I added all these updates, I found out I cant use "4" to quit, so I added "q" as a quit option 6/1/2026 by hongle chen
       if input.downcase == 'q'
         puts "Quitting game. Final score: #{@players[0].score}"
         quit_game
         next
       end
 
-      # Handle draw request 6/1/2026 by hongle chen
+      # Handle draw request
       if input.downcase == 'd'
         if @board.visible_cards.length >= 18
           puts "Board already has #{@board.visible_cards.length} cards (max 18). Cannot draw more."
@@ -66,16 +67,19 @@ class GameEnvironment
           puts "No cards left in the deck to draw."
         else
           new_cards = @deck.draw(3)
-          @board.visible_cards.concat(new_cards) # add new cards to the board's visible cards
+          # add new cards to the board's visible cards
+          @board.visible_cards.concat(new_cards)
           puts "Drew #{new_cards.length} card(s):"
-          new_cards.each { |c| puts "  #{c}" }  # for each new card, print it out tell the user what they drew
-          # line 58 59 not necessary but it is nice to give the user feedback on what they drew and how many cards are now on the board
+          # for each new card, print it out tell the user what they drew
+          new_cards.each { |c| puts "  #{c}" } 
         end
-        next # in invalid input case, skip the rest of the loop and prompt again, same for all nexts below 6/1/2026 by hongle chen
+        # in invalid input case, skip the rest of the loop and prompt again, same for all nexts below 6/1/2026 by hongle chen
+        next
       end
 
-      # Parse three indices 6/1/2026 by hongle chen
-      indices = input.split.map{|s| s.to_i} # convert input to array of integers
+      # Parse three indices
+      # convert input to array of integers
+      indices = input.split.map{|s| s.to_i}
       # split is used to separate the input string into parts based on spaces, and map(&:to_i) converts each part to an integer.
       # So if the user enters "1 2 3", indices will be [1, 2, 3].
       unless indices.length == 3
@@ -83,30 +87,32 @@ class GameEnvironment
         next
       end
 
-      # Validate index range 6/1/2026 by hongle chen
+      # Validate index range
       max_index = @board.visible_cards.length
       unless indices.all? { |i| i >= 1 && i <= max_index }
         puts "Indices must be between 1 and #{max_index}."
         next
       end
 
-      # Ensure no duplicate indices 6/1/2026 by hongle chen
+      # Ensure no duplicate indices
       if indices.uniq.length != 3
         puts "Please enter 3 different indices."
         next
       end
 
-      # out put the selection to player what they selected last round 6/1/2026 by hongle chen
-      selected = indices.map { |i| @board.visible_cards[i - 1] } # i-1 because display are 1-12, but index is 0-11
+      # out put the selection to player what they selected last round
+      # # i-1 because display are 1-12, but index is 0-11
+      selected = indices.map { |i| @board.visible_cards[i - 1] }
       puts "\nYou selected:"
-      selected.each_with_index { |c, i| puts "  #{indices[i]}: #{c}" } # for each selected card, print out the index and the card itself 6/1/2026 by hongle chen
+       # for each selected card, print out the index and the card itself 
+      selected.each_with_index { |c, i| puts "  #{indices[i]}: #{c}" }
 
-      # Validate set 6/1/2026 by hongle chen
       if @validator.validateCards?(selected[0], selected[1], selected[2])
         puts "Valid set! +1 point."
         @players[0].addPoint(1)
-        @board.visible_cards.reject! { |c| selected.include?(c) } # remove the selected cards from the board's visible cards if they are valid set 6/1/2026 by hongle chen
-        # Refill to 12 if deck has cards and board fell below 12 6/1/2026 by hongle chen
+        # remove the selected cards from the board's visible cards if they are valid set
+        @board.visible_cards.reject! { |c| selected.include?(c) } 
+        # Refill to 12 if deck has cards and board fell below 12
         while @board.visible_cards.length < 12 && !@deck.cards.empty?
           @board.visible_cards.concat(@deck.draw(3))
         end
