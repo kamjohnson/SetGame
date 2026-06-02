@@ -4,8 +4,17 @@
 require_relative 'card'
 require_relative 'deck'
 
+# File created 5/28/26 by Denis Zotaj
+# File modified 6/1/2026 by hongle chen - changed :visible_cards to attr_accessor
+# The Board class file is used for the playing table for the game
+# This deals with the board displaying a set of 12 visible cards 
+require_relative 'card'
+require_relative 'deck'
+
 class Board
-  attr_reader :visible_cards, :pending_cards
+  # moved to attr_accessor so GameEnvironment can modify the visible cards when sets are found or new cards are drawn
+  attr_accessor :visible_cards 
+  attr_reader :pending_cards
 
   def initialize(deck) 
     @visible_cards = deck.draw(12)
