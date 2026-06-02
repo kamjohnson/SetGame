@@ -71,26 +71,26 @@ end
 # Created 5/28/2026 by Joon Yoo
 describe 'deductPoint' do
     it 'Return true if points are deducted from the player score by the given amount' do
-        player = Player.new 1, "Joon", 5
+        player = Player.new 1, "Joon", 6
         player.deductPoint 3
-        expect(player.score == 2).to be_truthy
+        expect(player.score == 3).to be_truthy
         player.deductPoint 2
-        expect(player.score == 0).to be_truthy
+        expect(player.score == 1).to be_truthy
         player.deductPoint 1
-        expect(player.score == -1).to be_truthy
+        expect(player.score == 0).to be_truthy
     end
 end
 
 # Created 5/28/2026 by Joon Yoo
 describe 'invalidDeductPoint' do
     it 'Return false if points are deducted incorrectly from the player score by the given amount' do
-        player = Player.new 1, "Joon", 5
+        player = Player.new 1, "Joon", 8
         player.deductPoint 3
-        expect(player.score == 1).to be_falsey
+        expect(player.score == 4).to be_falsey
         player.deductPoint 2
-        expect(player.score == 3).to be_falsey
+        expect(player.score == 2).to be_falsey
         player.deductPoint 1
-        expect(player.score == -2).to be_falsey
+        expect(player.score == 1).to be_falsey
     end
 end
 

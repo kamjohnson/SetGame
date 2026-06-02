@@ -1,5 +1,7 @@
 # File created 5/25/2026 by Joon Yoo
 # Edited 5/28/2026 by Joon Yoo - Refactored using terse code
+# Edited 6/1/2026 by Joon Yoo - Added logic to prevent points from being deducted
+#   if the score is already 0.
 
 class Player
     attr_reader :playerID, :playerName, :score
@@ -15,6 +17,15 @@ class Player
     def addPoint(amount) @score += amount end
 
     # Created 5/25/2026 by Joon Yoo
-    # Deducts the given amount from the player's score.
-    def deductPoint(amount) @score -= amount end
+    # Edited 6/1/2026 by Joon Yoo - Added logic to prevent points from being deducted
+    #   if the score is already 0.
+    # Deducts the given amount from the player's score. If the score is already 0,
+    #   display message.
+    def deductPoint(amount)
+        if @score == 0
+            puts "Score is already 0. No point was deducted."
+        else
+            @score -= amount
+        end
+    end
 end
