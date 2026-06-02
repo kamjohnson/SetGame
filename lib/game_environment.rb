@@ -40,7 +40,7 @@ class GameEnvironment
   # Modified 6/1/26 by Michael Cintron - clean up comments and moved card validation into its own function
   # Starts the game, then enters the main game loop where the player selects cards or draws.
   def start_game
-    return if @state == :midgame
+    # return if @state == :midgame
     @state = :midgame
 
     while @state == :midgame
@@ -76,6 +76,18 @@ class GameEnvironment
         # in invalid input case, skip the rest of the loop and prompt again, same for all nexts below 6/1/2026 by hongle chen
         next
       end
+
+      # Handle cheat
+      if input == 'CHEAT'
+        cheatOutput = @board.cheat()
+        if @board.cheat.length == 3
+          print "\nHere are indexes of three cards that form a set: #{cheatOutput}\n"
+        else 
+          puts "There is not set on the board."
+        end
+        next
+      end
+
 
       next if !valid_card_selection? input
 
