@@ -1,5 +1,6 @@
 =begin
 # Created 5/31/2026 by Kameron Johnson
+# Edited on 6/1/2026 by Kameron - Added loop to allow replaying the game
 =end 
 require_relative 'game_environment'
 
@@ -27,15 +28,29 @@ def handle_menu choice
   when 1 
     game.choose_game_mode(:single_player)
     game.start_game
-    
+    true
   when 2
       game.choose_game_mode(:multiplayer)
       game.start_game
       "Multiplayer mode"
+      true
   when 3
     "exiting, goodbye"
+    false
   end   
      
 end
 
-run_game
+
+loop do 
+  game_was_played = run_game
+  break unless game_was_played
+  
+  print "\nWould you like to play again? (y/n): "
+  answer = gets.chomp.downcase
+  unless ['y', 'yes'].include?(answer)
+    puts "Thanks for playing! Goodbye."
+    break
+  end
+  
+end
