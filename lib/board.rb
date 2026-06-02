@@ -59,6 +59,7 @@ class Board
 		[]
 	end
 
+
     #Created 6/1/2026 by Kameron Johnson
     def card_count
         @visible_cards.length
@@ -68,5 +69,6 @@ class Board
      def remove_card(card)
         @visible_cards.delete(card)
      end 
-  end
+  
+end
 
