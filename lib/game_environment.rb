@@ -77,29 +77,9 @@ class GameEnvironment
         next
       end
 
-      # Parse three indices
-      # convert input to array of integers
+      next if !valid_card_selection? input
+
       indices = input.split.map{|s| s.to_i}
-      # split is used to separate the input string into parts based on spaces, and map(&:to_i) converts each part to an integer.
-      # So if the user enters "1 2 3", indices will be [1, 2, 3].
-      unless indices.length == 3
-        puts "Please enter exactly 3 indices."
-        next
-      end
-
-      # Validate index range
-      max_index = @board.visible_cards.length
-      unless indices.all? { |i| i >= 1 && i <= max_index }
-        puts "Indices must be between 1 and #{max_index}."
-        next
-      end
-
-      # Ensure no duplicate indices
-      if indices.uniq.length != 3
-        puts "Please enter 3 different indices."
-        next
-      end
-
       # out put the selection to player what they selected last round
       # # i-1 because display are 1-12, but index is 0-11
       selected = indices.map { |i| @board.visible_cards[i - 1] }
@@ -125,6 +105,29 @@ class GameEnvironment
         puts "Not a valid set. Try again."
       end
     end
+  end
+
+  # Created 6/1/26 by Hongle Chen and Michael Cintron 
+  # Check if the user provided an input that is three integers, that are indexes of the cards on the board.
+  # 
+  # userInput [string] the string that comes from the user's (expected to be already chomped)
+  # 
+  # return [true] if the userInput can be split into 3 integers that are within the index bounds of the board's deck.
+  def valid_card_selection? userInput
+    indices = userInput.split.map{|s| s.to_i}
+    # Validate index range
+    max_index = @board.visible_cards.length
+    unless indices.all? { |i| i >= 1 && i <= max_index }
+      puts "Indices must be between 1 and #{max_index}."
+      return false
+    end
+
+    if indices.uniq.length != 3
+      puts "Please enter exactly 3 unique indices."
+      return false
+    end
+    
+    true
   end
   
   # Created 5/26/2026 by Kameron Johnson

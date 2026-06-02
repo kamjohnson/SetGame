@@ -160,3 +160,74 @@ describe GameEnvironment do
   end
 
 end
+
+# Created on 6/1/26 by Michael Cintron
+describe 'invalidInputEmpty' do
+    it 'Return false if the given string is empty' do
+        game = GameEnvironment.new
+        output = game.valid_card_selection? ""
+        expect(output).to be_falsey
+    end
+end
+
+# Created on 6/1/26 by Michael Cintron
+describe 'invalidInputOneNumber' do
+    it 'Return false if the given string is one number' do
+        game = GameEnvironment.new
+        output = game.valid_card_selection? "1"
+        expect(output).to be_falsey
+    end
+end
+
+# Created on 6/1/26 by Michael Cintron
+describe 'invalidInputTwoNumbers' do
+    it 'Return false if the given string is two space seperated numbers' do
+        game = GameEnvironment.new
+        output = game.valid_card_selection? "1 2"
+        expect(output).to be_falsey
+    end
+end
+
+# Created on 6/1/26 by Michael Cintron
+describe 'validInputThreeNumbers' do
+    it 'Return true if the given string is three space seperated numbers' do
+        game = GameEnvironment.new
+        output = game.valid_card_selection? "1 2 3"
+        expect(output).to be_truthy
+    end
+end
+
+# Created on 6/1/26 by Michael Cintron
+describe 'invalidInputFourCharacters' do
+    it 'Return false if the given string is four space seperated characters' do
+        game = GameEnvironment.new
+        output = game.valid_card_selection? "1 2 3 4"
+        expect(output).to be_falsey
+    end
+end
+
+# Created on 6/1/26 by Michael Cintron
+describe 'invalidInputThreeLetters' do
+    it 'Return false if the given string is three space seperated characters' do
+        game = GameEnvironment.new
+        output = game.valid_card_selection? "a b c"
+        expect(output).to be_falsey
+    end
+end
+
+# Created on 6/1/26 by Michael Cintron
+describe 'invalidInputThreeDuplicateNumbers' do
+    it 'Return false if the given string is three space seperated numbers that are the same number' do
+        game = GameEnvironment.new
+        output = game.valid_card_selection? "1 1 1"
+        expect(output).to be_falsey
+    end
+end
+
+describe 'invalidInputOverIndex' do
+    it 'Return false if any of the given numbers are not between 1 and 12' do
+        game = GameEnvironment.new
+        output = game.valid_card_selection? "1 2 13"
+        expect(output).to be_falsey
+    end
+end
