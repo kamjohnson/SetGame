@@ -50,7 +50,7 @@ class Board
      def remove_card(card)
         @visible_cards.delete(card)
      end 
-  end
+  
 
 
 
@@ -74,4 +74,5 @@ class Board
 
 		# return [1, 2, 3] if setVali.validateCards? @visible_cards[0], @visible_cards[1], @visible_cards[2]		
 		[]
+    end
 end

@@ -4,10 +4,12 @@
 =end 
 require_relative 'game_environment'
 
+# Created 5/31/2026 by Kameron Johnson
 def display_menu
   puts "Welcome to the Set Game!\nPlease select a game mode:\n1. Single Player\n2. Multiplayer(Coming soon)\n3. Exit"
 end
 
+#Created 5/31/2026 by Kameron Johnson
 def run_game
   display_menu
   choice = gets.chomp.to_i
@@ -32,7 +34,6 @@ def handle_menu choice
   when 2
       game.choose_game_mode(:multiplayer)
       game.start_game
-      "Multiplayer mode"
       true
   when 3
     "exiting, goodbye"
@@ -41,7 +42,8 @@ def handle_menu choice
      
 end
 
-
+#Created 6/1/2026 by Kameron Johnson
+#checks if the game was played, if so, prompts the user to play again, otherwise exits
 loop do 
   game_was_played = run_game
   break unless game_was_played
