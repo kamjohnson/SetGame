@@ -1,7 +1,6 @@
 =begin
 Created 6/1/2026 by Kameron Johnson
 =end
-require 'main'
 describe 'Main Game Loop and Menu' do
   let(:mock_game) { instance_double(GameEnvironment) }
 
