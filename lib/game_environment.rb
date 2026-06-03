@@ -11,6 +11,7 @@ Edited 6/1/2026 by Joon Yoo - Modified initialize method to accept player inform
     when creating a player object
 Edited 6/1/2026 by Joon Yoo - Updated score display to show the player’s name along with the score.
 Edited 6/1/2026 by Joon Yoo - Added point deduction when the player selects an invalid set.
+Edited 6/2/26 by Michael Cintron - 
 =end
 require_relative 'deck'
 require_relative 'board'
@@ -88,6 +89,7 @@ class GameEnvironment
 
       # Handle cheat
       if input == 'CHEAT'
+        # Get array of 3 indices or empty array if there is no set
         cheatOutput = @board.cheat()
         if @board.cheat.length == 3
           print "\nHere are indexes of three cards that form a set: #{cheatOutput}\n"
@@ -97,11 +99,12 @@ class GameEnvironment
         next
       end
 
+      # Go to the next loop if the user did not provide 3 card indices
       next if !valid_card_selection? input
 
       indices = input.split.map{|s| s.to_i}
       # out put the selection to player what they selected last round
-      # # i-1 because display are 1-12, but index is 0-11
+      # i-1 because display are 1-12, but index is 0-11
       selected = indices.map { |i| @board.visible_cards[i - 1] }
       puts "\nYou selected:"
        # for each selected card, print out the index and the card itself 
@@ -129,25 +132,27 @@ class GameEnvironment
   end
 
   # Created 6/1/26 by Hongle Chen and Michael Cintron 
+  # Modified 6/2/26 by Michael Cintron - improved terse-ness and added single line comments
   # Check if the user provided an input that is three integers, that are indexes of the cards on the board.
   # 
   # userInput [string] the string that comes from the user's (expected to be already chomped)
   # 
   # return [true] if the userInput can be split into 3 integers that are within the index bounds of the board's deck.
   def valid_card_selection? userInput
+    # take user input, split it, and convert each split-string into an integer
     indices = userInput.split.map{|s| s.to_i}
-    # Validate index range
+
+    # Check if the indices given are with the bounds of 1 and <# of cards on board>
     max_index = @board.visible_cards.length
     unless indices.all? { |i| i >= 1 && i <= max_index }
       puts "Indices must be between 1 and #{max_index}."
       return false
     end
 
-    if indices.uniq.length != 3
-      puts "Please enter exactly 3 unique indices."
-      return false
-    end
+    # Check if the user provided 3 unique indices
+    if indices.uniq.length != 3; puts "Please enter exactly 3 unique indices."; return false end
     
+    # return true if all checks passed
     true
   end
   
