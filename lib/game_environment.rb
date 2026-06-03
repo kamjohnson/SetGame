@@ -10,6 +10,7 @@ Edited 6/1/2026 - Added player score display, handle draw requests, inputs
 Edited 6/1/2026 by Joon Yoo - Modified initialize method to accept player information as parameters
     when creating a player object
 Edited 6/1/2026 by Joon Yoo - Updated score display to show the player’s name along with the score.
+Edited 6/1/2026 by Joon Yoo - Added point deduction when the player selects an invalid set.
 =end
 require_relative 'deck'
 require_relative 'board'
