@@ -6,7 +6,7 @@ require 'deck'
 describe 'deckHas81Cards' do
     it 'Return true if deck has 81 cards' do
         deck = Deck.new
-        output = (deck.cards.length == 81)
+        output = (deck.card_count == 81)
         expect(output).to be_truthy
     end
 end
