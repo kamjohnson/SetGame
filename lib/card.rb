@@ -26,7 +26,7 @@ class Card
         @pattern = pattern
     end
     # Created 5/27  By Hongle Chen
-    def to_s
-        "#{number} #{color} #{pattern} #{shape}"
-    end
+    # into one line terse code 6/2/26 Hongle Chen
+    def to_s = "#{number} #{color} #{pattern} #{shape}"
+
 end
