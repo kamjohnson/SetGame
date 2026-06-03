@@ -16,7 +16,7 @@ class SetValidator
     # 
     # @param [symbol] prop0, prop1, prop2 The three given shapes
     # 
-    # return [true] if all the properties are the same OR if they are all different
+    # @return [true] if all the properties are the same OR if they are all different
     def validateProperty? (prop0, prop1, prop2) [prop0, prop1, prop2].uniq.length != 2 end
 
     # Created 5/28/26 by Michael Cintron
@@ -25,7 +25,7 @@ class SetValidator
     # 
     # @param [Card] card0, card1, card2 The three given cards.
     # 
-    # return [true] if all three cards form a valid set.
+    # @return [true] if all three cards form a valid set.
     def validateCards? card0, card1, card2
         # split each card into their four property components
         number0, color0, pattern0, shape0 = card0.to_s.split
