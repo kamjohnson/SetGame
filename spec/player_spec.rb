@@ -69,6 +69,7 @@ describe 'invalidAddPoint' do
 end
 
 # Created 5/28/2026 by Joon Yoo
+# Edited on 6/2/26 by Michael Cintron - updated deduct point to never go below 0
 describe 'deductPoint' do
     it 'Return true if points are deducted from the player score by the given amount' do
         player = Player.new 1, "Joon", 5
@@ -77,7 +78,7 @@ describe 'deductPoint' do
         player.deductPoint 2
         expect(player.score == 0).to be_truthy
         player.deductPoint 1
-        expect(player.score == -1).to be_truthy
+        expect(player.score == 0).to be_truthy
     end
 end
 
