@@ -1,9 +1,12 @@
 =begin
 Created 6/1/2026 by Kameron Johnson
+Edited 6/2/2026 - Updated tests to evaluate MainMenu class instance architecture
 =end
 require 'main'
-describe 'Main Game Loop and Menu' do
+
+describe MainMenu do
   let(:mock_game) { instance_double(GameEnvironment) }
+  let(:menu) { MainMenu.new } # Instantiate the class for testing
 
   before do
     # Stub GameEnvironment creation so we don't trigger actual game state initialization
@@ -14,24 +17,24 @@ describe 'Main Game Loop and Menu' do
 
   describe '#run_game' do
     it 'processes valid input for single player mode' do
-      # Simulate the user typing '1'
-      allow(self).to receive(:gets).and_return("1\n")
+      # Stub gets on the menu instance instead of self
+      allow(menu).to receive(:gets).and_return("1\n")
       
       expect(mock_game).to receive(:choose_game_mode).with(:single_player)
       expect(mock_game).to receive(:start_game)
       
-      run_game
+      menu.run_game
     end
 
     it 'loops and prompts again if user gives an invalid option first' do
       # Simulate user entering an invalid choice '5', then correcting to '3'
-      allow(self).to receive(:gets).and_return("5\n", "3\n")
+      allow(menu).to receive(:gets).and_return("5\n", "3\n")
       
-      # Verify it catches the invalid input warning
-      expect(self).to receive(:puts).with("Welcome to the Set Game!\nPlease select a game mode:\n1. Single Player\n2. Multiplayer(Coming soon)\n3. Exit")
-      expect(self).to receive(:puts).with("Invalid choice. Please select a valid option:")
+      # Verify it catches the warnings outputted by the menu instance
+      expect(menu).to receive(:puts).with("Welcome to the Set Game!\nPlease select a game mode:\n1. Single Player\n2. Multiplayer(Coming soon)\n3. Exit")
+      expect(menu).to receive(:puts).with("Invalid choice. Please select a valid option:")
       
-      run_game
+      menu.run_game
     end
   end
 
@@ -40,11 +43,11 @@ describe 'Main Game Loop and Menu' do
       expect(mock_game).to receive(:choose_game_mode).with(:single_player)
       expect(mock_game).to receive(:start_game)
       
-      expect(handle_menu(1)).to eq(true)
+      expect(menu.handle_menu(1)).to eq(true)
     end
 
     it 'returns false when exit option 3 is selected' do
-      expect(handle_menu(3)).to eq(false)
+      expect(menu.handle_menu(3)).to eq(false)
     end
   end
 end
