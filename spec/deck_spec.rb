@@ -3,6 +3,7 @@
 # This file did test for checking if the deck has 81 cards and if there are no duplicate cards in the deck
 require 'deck'
 # Created 5/27  By Hongle Chen
+# Modified 6/2/26 by Michael Cintron - now using the card_count method
 describe 'deckHas81Cards' do
     it 'Return true if deck has 81 cards' do
         deck = Deck.new
