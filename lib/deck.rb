@@ -16,25 +16,21 @@ class Deck
     end
 
     # Created 5/27  By Hongle Chen
-    def shuffle!
-        @cards.shuffle!
-    end
 
+    # into one line terse code 6/2/26 Hongle Chen
+    def shuffle! = @cards.shuffle!
     # Created 5/27  By Hongle Chen
-    def draw(number)
-        @cards.shift(number)
-    end
     
+    def draw(number) = @cards.shift(number)  
+        
     #Created 6/1/2026 by Kameron Johnson
-    def empty?
-        @cards.empty?
-    end
+    def empty? = @cards.empty?
 
     #Created 6/1/2026 by Kameron Johnson
-    def card_count
-        @cards.length
-    end
+    def card_count = @cards.length
+
 end
+
 
 
 
