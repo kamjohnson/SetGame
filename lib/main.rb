@@ -36,7 +36,7 @@ def handle_menu choice
       game.start_game
       true
   when 3
-    "exiting, goodbye"
+    puts "Exiting, goodbye"
     false
   end   
      
