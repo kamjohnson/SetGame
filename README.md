@@ -54,6 +54,7 @@ The meeting notes were essentially our 5/24/26 submission;
     - end on 5/26/26
 
 ## 5/28/26
+(Hongle, Michael, Kameron, Joon, Denis)
 Goals:
 - Kameron: 
     -Get everyone to know what they have to do for tonight
@@ -74,6 +75,111 @@ Goals:
 - Bit of code review – noted Hongle to move tests to dedicated file 
 - Noted Yoo to move tests to rspec 
 - Most of this meeting was figuring out issues with sharing code via git 
+
+## 5/31/26
+(Hongle, Michael, Kameron, Joon)
+Goals:
+- Kameron:
+    - Find a common time for the standup
+    - Clarify the user input placement within the project
+    - Plan out sprints before the due date this week 
+- Hongle: 
+    - Determine the scope of the code we need to submit by Tuesday. 
+    - My idea is to at least allow the player to select cards by their index numbers to play. 
+- Yoo: 
+    - Determine which parts we can definitely complete to make the game at least playable for checkpoint 2. 
+    - Determine how the player’s score status will be updated. 
+    - Review the current code structure and decide how to improve it or add new features. 
+- Michael: 
+    - Determine what state of the app we want to be done for checkpoint 2 
+        - I want a fully working text-based game 
+    - Create tickets for clearer understanding of work to be done 
+    - Figure out what is responsible for handling user input 
+        - Want to be able to select cards, pause, quit 
+    - Documentation standard: are we going with a jdoc format? 
+
+Notes: 
+- What are our user inputs: 
+
+    Game can provide an index of the cards listed 
+
+    Or provide a character input to perform 
+
+     
+
+ 
+
+    General while loop method that is looking for user input: 
+
+    If input “s” (call board class) 
+
+    Display the current board 
+
+    User selects the indexes of three cards (method in board class) 
+
+    If set: 
+
+    Remove cards from the board deck 
+
+    Give the player a point 
+
+    If board deck has less than 12 cards: 
+
+    Draw 3 more cards 
+
+    Add 3 points to  player’s score 
+
+    If not set: 
+
+    Deduct 1 points from player’s score 
+
+    Board has nothing left to run, so execution returns to 
+
+    If input “p” 
+
+    Game paused: 
+
+    User inputs “1” 
+
+    Resumes game 
+
+    Seset User inputs “2” 
+
+    Game  restarts 
+
+    User inputs “3” 
+
+    Game quits 
+
+    When deck is empty, user may choose to end the game “q” 
+
+    Ends the game 
+
+    Displays player scores 
+
+    End game deck: 
+
+    If deck and board deck are empty then the game automatically ends 
+
+    Displays player scores 
+
+Tickets: 
+
+    Ensure that all tabbing is consistent: 
+
+    4 spaces? 
+
+    How to track the cards on the board 
+
+    Should this live in the board class? 
+
+    Create isEmpty? Method for deck 
+
+    Use =begin and =end for the top of file edit history 
+
+    So we can say we’re using multiline comments 
+
+     
 
 # Use Cases
 -(Kameron) Game mechanics Ending:
