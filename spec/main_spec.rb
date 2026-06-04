@@ -1,6 +1,7 @@
 =begin
 Created 6/1/2026 by Kameron Johnson
 Edited 6/2/2026 - Updated tests to evaluate MainMenu class instance architecture
+Edited 6/4/2026 - Edited failing "loops and prompts again" test case to properly reflect the refactored code.ß
 =end
 require 'main'
 
@@ -26,16 +27,20 @@ describe MainMenu do
       menu.run_game
     end
 
-    it 'loops and prompts again if user gives an invalid option first' do
-      # Simulate user entering an invalid choice '5', then correcting to '3'
-      allow(menu).to receive(:gets).and_return("5\n", "3\n")
-      
-      # Verify it catches the warnings outputted by the menu instance
-      expect(menu).to receive(:puts).with("Welcome to the Set Game!\nPlease select a game mode:\n1. Single Player\n2. Multiplayer(Coming soon)\n3. Exit")
-      expect(menu).to receive(:puts).with("Invalid choice. Please select a valid option:")
-      
-      menu.run_game
-    end
+      it 'loops and prompts again if user gives an invalid option first' do
+        allow(menu).to receive(:gets).and_return("5\n", "3\n")
+        
+        # 1. First menu prompt (Happens before the until loop)
+        expect(menu).to receive(:puts).with("Welcome to the Set Game!\nPlease select a game mode:\n1. Single Player\n2. Multiplayer(Coming soon)\n3. Exit").ordered
+        
+        # 2. Invalid choice response (Inside the until loop)
+        expect(menu).to receive(:puts).with("Invalid choice. Please select a valid option:").ordered
+        
+        # 3. Final exit text (Triggered by handle_menu after entering "3")
+        expect(menu).to receive(:puts).with("Exiting, goodbye").ordered
+        
+        menu.run_game
+      end
   end
 
   describe '#handle_menu' do
