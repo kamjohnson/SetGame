@@ -5,10 +5,12 @@ Edited 6/1/2026 by Kameron Johnson - added card_count method and replaced direct
 Edited 6/2/26 by Michael Cintron - Made tabbing consistent, added comments for cheat
 The Board class file is used for the playing table for the game
 This deals with the board displaying a set of 12 visible cards
+Edited 6/5/26 by Kameron Johnson - add method to link cards to their .png
 =end
 require_relative 'card'
 require_relative 'deck'
 require_relative 'set_validator'
+require_relative 'card_assets'
 
 # File created 5/28/26 by Denis Zotaj
 # File modified 6/1/2026 by hongle chen - changed :visible_cards to attr_accessor
@@ -96,4 +98,19 @@ class Board
 		# return an empty array if no set is found
 		[]
 	end
+
+# Created by Kameron on 6/5/2026
+# Assigns images to each card in the deck based on their properties
+# 
+# @param deck [Array] array of Card objects
+# @return [void] returns nothing (modifies cards in place)
+	def link_deck_images(deck)
+    deck.each do |card|
+      key = [card.number, card.color, card.shape, card.pattern]
+      file_name = CardAssets::MAP[key]
+      card.assign_image(file_name) if file_name
+    	end
+  	end
+
+
 end

@@ -73,28 +73,33 @@ menu = MainMenu.new
 
 # Created 6/1/2026 by Kameron Johnson
 # Edited 6/2/2026 - fixed loop control variables and routing
+# Editd 6/4/2026 - added __FILE__ guard to prevent auto-launch during testing
 # 
+#
 # This script manages the core application lifecycle. It instantiates the 
 # user interface and maintains the execution loop that keeps the application 
 # active until the user requests a termination.
-choice = true
 
-while choice == true
-  # Run the game menu and track if the user chose to play or exit
-  game_was_played = menu.run_game
+if __FILE__ == $0
+  choice = true
+
+  while choice == true
+    # Run the game menu and track if the user chose to play or exit
+    game_was_played = menu.run_game
+    
+    # If run_game returned false (User selected 3. Exit), exit the loop instead of prompting to play again.
+    if game_was_played == false
+      choice = false
+      next
+    end
   
-  # If run_game returned false (User selected 3. Exit), exit the loop instead of prompting to play again.
-  if game_was_played == false
-    choice = false
-    next
-  end
-
-  # After a game session ends, prompt the user to play again. If they select 'y' or 'yes',
-  # the loop will continue and present the menu again. 
-  # Any other input will exit the loop and end the program.
-  print "\nWould you like to play again? (y/n): "
-  unless ['y', 'yes'].include? gets.chomp.downcase
-    choice = false
-    puts "Thanks for playing! Goodbye."
+    # After a game session ends, prompt the user to play again. If they select 'y' or 'yes',
+    # the loop will continue and present the menu again. 
+    # Any other input will exit the loop and end the program.
+    print "\nWould you like to play again? (y/n): "
+    unless ['y', 'yes'].include? gets.chomp.downcase
+      choice = false
+      puts "Thanks for playing! Goodbye."
+    end
   end
 end
