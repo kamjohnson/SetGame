@@ -100,84 +100,44 @@ Goals:
 
 Notes: 
 - What are our user inputs: 
-
-    Game can provide an index of the cards listed 
-
-    Or provide a character input to perform 
-
-     
-
- 
-
-    General while loop method that is looking for user input: 
-
-    If input “s” (call board class) 
-
-    Display the current board 
-
-    User selects the indexes of three cards (method in board class) 
-
-    If set: 
-
-    Remove cards from the board deck 
-
-    Give the player a point 
-
-    If board deck has less than 12 cards: 
-
-    Draw 3 more cards 
-
-    Add 3 points to  player’s score 
-
-    If not set: 
-
-    Deduct 1 points from player’s score 
-
-    Board has nothing left to run, so execution returns to 
-
-    If input “p” 
-
-    Game paused: 
-
-    User inputs “1” 
-
-    Resumes game 
-
-    Seset User inputs “2” 
-
-    Game  restarts 
-
-    User inputs “3” 
-
-    Game quits 
-
-    When deck is empty, user may choose to end the game “q” 
-
-    Ends the game 
-
-    Displays player scores 
-
-    End game deck: 
-
-    If deck and board deck are empty then the game automatically ends 
-
-    Displays player scores 
+    - Game can provide an index of the cards listed
+    - Or provide a character input to perform 
+- General while loop method that is looking for user input: 
+    - If input “s” (call board class) 
+    - Display the current board 
+    - User selects the indexes of three cards (method in board class) 
+        - If set: 
+            - Remove cards from the board deck 
+            - Give the player a point 
+            - If board deck has less than 12 cards: 
+                -Draw 3 more cards 
+            - Add 3 points to  player’s score 
+        - If not set: 
+            - Deduct 1 points from player’s score 
+        - Board has nothing left to run, so execution returns to 
+    - If input “p” 
+        - Game paused: 
+            - User inputs “1” 
+                - Resumes game 
+            - User inputs “2” 
+                - Game  restarts 
+            - User inputs “3” 
+                -Game quits 
+    - When deck is empty, user may choose to end the game “q” 
+        - Ends the game 
+        - Displays player scores 
+    - End game deck: 
+        - If deck and board deck are empty then the game automatically ends 
+        - Displays player scores 
 
 Tickets: 
-
-    Ensure that all tabbing is consistent: 
-
-    4 spaces? 
-
-    How to track the cards on the board 
-
-    Should this live in the board class? 
-
-    Create isEmpty? Method for deck 
-
-    Use =begin and =end for the top of file edit history 
-
-    So we can say we’re using multiline comments 
+- Ensure that all tabbing is consistent: 
+    - 4 spaces? 
+- How to track the cards on the board 
+    - Should this live in the board class? 
+- Create isEmpty? Method for deck 
+- Use =begin and =end for the top of file edit history 
+    -So we can say we’re using multiline comments 
 
      
 
@@ -231,6 +191,19 @@ Tickets:
 - Tie the various methods and classes into the main game class (Kameron)
 - Set up the set validator class (Michael)
 - Create a basic text interface for a user (Yoo and Denis)
-- 
 
-... continue ...
+## Sprint #3 (End 6/2/26)
+- Running, interactive game
+    - Handle core gameplay with user's input
+- Cheat method to quickly identify sets
+- Revise main.rb to include overarching game logic
+
+## Sprint #4
+- Graphic UI
+- Polish code
+    - Consistent doc standards
+    - Terse
+    - Using Ruby features (not writing like a Java dev)
+- Fix bug with the game being ran when the tests are ran
+- Move card properties to their own module
+- Break down logic in main.rb and game_env.rb into smaller, easier to read methods
