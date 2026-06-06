@@ -537,10 +537,5 @@ end
 # =======================================================================================================
 
 
-# update do
-# end
-
-
-
-show # Start the Ruby2D application loop to display the window and handle events
-
+# Start the Ruby2D application loop to display the window and handle events
+show

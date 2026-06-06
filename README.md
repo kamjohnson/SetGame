@@ -2,14 +2,30 @@
 CSE3901 - Summer 2026
 
 # Execution instructions
-    Run ```ruby main.rb``` in the lib directory
+This project has two versions:
+1. A full GUI singleplayer experience 
+2. A more feature rich, but command-line limited game
+
+Before running either version, run:
+`bundle install` at the root of the project directory
+- If ruby2d is not installing, run:
+```sudo apt install libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev libsdl2-ttf-dev``` the run ```bundle install``` again.
+- (https://www.ruby2d.com/learn/linux/#install-packages)
+
+For the GUI version:
+- Run `ruby gui.rb` in the lib directory
+
+For the command-line version:
+- Run `ruby main.rb` in the lib directory
+
+
 # Managers
 ## Overall Project Manager: Kameron Johnson
 ## Meeting Manger: Michael Cintron 
 
 # Meeting Reports
 
-## 5/21/26 Notes
+## 5/21/26 Meeting Notes
 (Hongle, Michael, Kameron, Joon)
 ### Goal: Figure out what we need to do for the first project 1 submission. 
 - Putting off real meeting to weekend so we can look over project in more depth and let Denis participate 
@@ -24,7 +40,7 @@ CSE3901 - Summer 2026
 - Kameron will reach out to Denis to see if his schedule would line up with a Saturday meeting
 - Team members bring “goals” to next meeting 
 
-## 5/23/26 Notes
+## 5/23/26 Meeting Notes
 (Hongle, Michael, Kameron, Joon)
 ### Meeting goals:
 - Michael:
@@ -53,8 +69,9 @@ The meeting notes were essentially our 5/24/26 submission;
 - Laid out first sprint 
     - end on 5/26/26
 
-## 5/28/26
+## 5/28/26 Meeting Notes
 (Hongle, Michael, Kameron, Joon, Denis)
+
 Goals:
 - Kameron: 
     -Get everyone to know what they have to do for tonight
@@ -76,7 +93,7 @@ Goals:
 - Noted Yoo to move tests to rspec 
 - Most of this meeting was figuring out issues with sharing code via git 
 
-## 5/31/26
+## 5/31/26 Meeting Notes
 (Hongle, Michael, Kameron, Joon)
 Goals:
 - Kameron:
@@ -139,7 +156,51 @@ Tickets:
 - Use =begin and =end for the top of file edit history 
     -So we can say we’re using multiline comments 
 
-     
+## 6/4/26 Meeting Notes
+(Hongle, Michael, Kameron, Joon)
+
+Goals:
+- Kameron: 
+    - Define last sprint
+    - Have a date and time when we finish projec 
+- Hongle:
+    - Determine what version of the app we are submitting
+- Yoo: 
+    - Determine last sprint 
+    - Determine if we are prioritizing GUI or other features 
+- Michael: 
+    - Establish final project goals: 
+        - Every method has rdoc comments 
+        - Break down larges into smaller parts (big while loop in game_env)
+    - Clearly allocate who works on what and what is up for grabs 
+    - I want to finish the project by the evening no Saturday (6pm) – not midnight 
+
+Notes: 
+- Kam and Yoo discussing how to merge their main.rb files 
+- Discussing what parts of player class are still needed (player_id needed? Multiplayer?)  
+- Have a fully fledged out single player experience
+    - Tuturial and multiple can exist as a terminal 
+- Final bits of work: 
+    - Modify main.rb so importing it does not run the game (Maybe Michael) 
+       - Might need to make another file that calls the main class to run the game 
+    - Refactoring Kam and Yoo’s main.rb into one file (Yoo and Kam) 
+    - RDoc comments (everyone) 
+    - Moving the input handling in game_env into its own method (Michael) 
+    - Creating the graphical UI (Kam) 
+        - Cards (Hongle)
+        - Board (Kam) 
+    - Ensure code uses consistent tabbing (2 or 4 spaces)
+    - Review code to ensure: 
+        - Terse-ness (everyone) 
+        - Proper single line comments (everyone) 
+        - Regular use of Ruby’s own features (aka, not writing like a Java dev) 
+    - Additional time:  
+        - Multiplayer? (Yoo) 
+            - 2 player 
+            - Uses hashes 
+        - Tutorial Mode (Yoo) 
+        - Timer (Michael)  
+
 
 # Use Cases
 -(Kameron) Game mechanics Ending:
