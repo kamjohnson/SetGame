@@ -30,7 +30,7 @@ class GameEnvironment
   #   so GameEnvironment can create a player using user input from main.
   #   Also removed the duplicated statement: @state, @mode = :pregame, nil
   # Modified 6/5/2026 by Kameron Johnson - added :board to attr_reader so gui can read board
-  attr_reader :state, :mode, :board
+  attr_reader :state, :mode, :board, :deck
   def initialize player_id = 1, player_name = "Player 1"
     @deck = Deck.new
     @deck.shuffle!
