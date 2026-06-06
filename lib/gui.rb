@@ -217,8 +217,9 @@ end
 @popup_active = false
 @score = 0
 
-game_env = GameEnvironment.new 
-validator = SetValidator.new
+game_env = GameEnvironment.new
+@game_env = GameEnvironment.new
+@validator = SetValidator.new
 
 # Created by Kameron Johnson on 6/5/2026
 # Renders all board cards to the Ruby2D grid layout
@@ -297,6 +298,32 @@ def show_popup(message, color = '#27ae60')
 end
 
 
+# Created 6/6/26 by Hongle Chen and Michael Cintron 
+# Create a message based on if the user created a set, an invalid set, or not enough selected cards
+# 
+# return [string] the message the user receives upon clicking the confirm button.
+def handle_confirm  
+  if @selected_cards.length != 3
+      return "Please select exactly 3 cards"
+  else
+    selected_cards = @selected_cards.map(&:card_data)
+
+    if @validator.validateCards? selected_cards[0], selected_cards[1], selected_cards[2] 
+      replace_valid_set(@game_env, selected_cards, @deck_count_text)
+      @score += 1
+      @scoreboard_score.text = @score.to_s
+      @selected_cards.each(&:deselect)
+      @selected_cards.clear    
+      return "Valid Set! Score +1"
+    else
+      @selected_cards.each(&:deselect)
+      @selected_cards.clear
+      return "Not a valid Set."
+    end
+  end
+end
+
+
 #=======================================UI Setup========================================================================
 #update 6/5/2026 Hongle Chen - Define button positions 
 BOTTOM_BUTTON_COUNT = 4
@@ -361,7 +388,7 @@ deck_label = Text.new(
   z: 6
 )
 
-deck_count_text = Text.new(
+@deck_count_text = Text.new(
   game_env.deck.card_count.to_s,
   style: 'bold',
   size: 24,
@@ -383,7 +410,7 @@ scoreboard_name = Text.new(
 
 
 #TODO: pass in player score
-scoreboard_score = Text.new(
+@scoreboard_score = Text.new(
   @score.to_s,
   style: 'bold',
   size: 24,
@@ -415,13 +442,13 @@ render_board(game_env.board.visible_cards)
 # =======================================Draw Cards===============================================================
 # 6/5/2026 Hongle Chen - method to update the deck count display on the dashboard whenever cards are drawn from the deck
 def update_deck_count(deck_count_text, game_env)
-  deck_count_text.text = game_env.deck.card_count.to_s
+  @deck_count_text.text = game_env.deck.card_count.to_s
 end
 
 # 6/5/2026 Hongle Chen - method to replace a valid set of cards on the board with new cards drawn from the deck, 
 #   or remove them if the deck is empty, then re-render the board
-def replace_valid_set(game_env, selected_card_objects, deck_count_text)
-  indices = selected_card_objects.map do |card|
+def replace_valid_set(game_env, selected_cards, deck_count_text)
+  indices = selected_cards.map do |card|
     game_env.board.visible_cards.index(card)
   end.compact.sort.reverse
 
@@ -439,22 +466,22 @@ def replace_valid_set(game_env, selected_card_objects, deck_count_text)
 end
 
 # 6/5/2026 Hongle Chen - method to draw 3 additional cards from the deck onto the board and re-render the layout
-def draw_three_cards(game_env, deck_count_text)
-  return if game_env.deck.card_count <= 0
+def draw_three_cards()
+  return if @game_env.deck.card_count <= 0
 
   max_cards_on_board = 18
 
-  available_slots = max_cards_on_board - game_env.board.visible_cards.length
+  available_slots = max_cards_on_board - @game_env.board.visible_cards.length
 
   return if available_slots <= 0
 
-  cards_to_draw = [3, game_env.deck.card_count].min
-  new_cards = game_env.deck.draw(cards_to_draw)
+  cards_to_draw = [3, @game_env.deck.card_count].min
+  new_cards = @game_env.deck.draw(cards_to_draw)
 
-  game_env.board.visible_cards.concat(new_cards)
+  @game_env.board.visible_cards.concat(new_cards)
 
-  update_deck_count(deck_count_text, game_env)
-  render_board(game_env.board.visible_cards)
+  update_deck_count(@deck_count_text, @game_env)
+  render_board(@game_env.board.visible_cards)
 end
 # =================================================================================================================
 
@@ -465,58 +492,24 @@ on :mouse_down do |event|
   mouse_x = event.x
   mouse_y = event.y
 
-  if @popup_active
-    if @popup_button && @popup_button.contains_point?(mouse_x, mouse_y)
-      close_popup
-    end
-    next
-  end
+  if @popup_active && @popup_button.contains_point?(mouse_x, mouse_y) then close_popup end
 
   if hint_btn.contains_point?(mouse_x, mouse_y) then show_popup(game_env.cheat) end
 
   if confirm_btn.contains_point?(mouse_x, mouse_y)
-    if @selected_cards.length != 3
-      show_popup("Please select exactly 3 cards", '#c0392b')
-    else
-      selected_card_objects = @selected_cards.map(&:card_data)
-
-      if validator.validateCards?(
-          selected_card_objects[0],
-          selected_card_objects[1],
-          selected_card_objects[2]
-        )
-        replace_valid_set(game_env, selected_card_objects, deck_count_text)
-        @score += 1
-        scoreboard_score.text = @score.to_s
-        @selected_cards.each(&:deselect)
-        @selected_cards.clear    
-        show_popup("Valid Set! Score +1", '#27ae60')
-
-      else
-        @selected_cards.each(&:deselect)
-        @selected_cards.clear
-        show_popup("Not a valid Set.", '#c0392b')
-      end
-    end
-    next
+    show_popup handle_confirm
   end
+  
 
   # 6/5/2026 Hongle Chen -Draw button, draw three additional cards from the deck
-  if draw_btn.contains_point?(mouse_x, mouse_y)
-    draw_three_cards(game_env, deck_count_text)
-    next
-  end
+  if draw_btn.contains_point?(mouse_x, mouse_y) then draw_three_cards end
 
-  # 6/5/2026 Hongle Chen - Check if the click was on the Finish button, and if so, exit the application immediately
-  #   click finish to exit the game and window
-  #   don't use x to exit window, it will continue run in memory
-  
+  # 6/5/2026 Hongle Chen - exit the application immediately
   if finish_btn.contains_point?(mouse_x, mouse_y)
     Thread.new do
       sleep 0.05
       Process.exit!(0)
     end
-    next
   end
   
   clicked_card = @active_visual_cards.find { |vc| vc.contains_point?(mouse_x, mouse_y) }
@@ -533,6 +526,7 @@ on :mouse_down do |event|
       end
     end
   end
+  
 end
 # =======================================================================================================
 
