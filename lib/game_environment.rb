@@ -122,7 +122,7 @@ class GameEnvironment
         @board.visible_cards.reject! { |c| selected.include?(c) } 
         # Refill to 12 if deck has cards and board fell below 12
         while @board.visible_cards.length < 12 && !@deck.empty?
-          @board.visible_cards.concat(@deck.draw(3))
+          draw_three_cards
         end
         puts "#{@players[0].playerName}'s score: #{@players[0].score}" unless @mode == :tutorial
         if @board.visible_cards.empty? && @deck.empty?
@@ -203,6 +203,14 @@ class GameEnvironment
   def pause_action(choice)
     case choice
     when "1" then :resume; when "2" then :restart; when "3" then :change_mode;  when "4" then :quit; else nil end
+  end
+
+  # Created 6/6/26 Michael Cintron
+  # draw 3 cards from the deck and put them onto the board
+  #
+  # return [array] all board with 3 new cards
+  def draw_three_cards 
+    @board.visible_cards.concat @deck.draw 3 if @deck.card_count > 0 
   end
 
 end
