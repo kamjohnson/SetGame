@@ -5,6 +5,7 @@ File Edited 6/5/2026 by Kameron Johnson: Implemented Ruby2D UI layout including 
   auto-centering text, layout positioning, and static dashboard controls (Hint, Draw, Finish, Scoreboard). 
   Created 81 card '.png's for the gui.
   Implemented
+File Edited 6/6/26 by Michael Cintron - implemented hint functionality
 =end
 
 require 'ruby2d'
@@ -55,10 +56,6 @@ qaq_image = Image.new(
   height: 100,
   z: 3
 )
-
-
-
-
 
 
 class Button
@@ -300,8 +297,6 @@ def show_popup(message, color = '#27ae60')
 end
 
 
-
-
 #=======================================UI Setup========================================================================
 #update 6/5/2026 Hongle Chen - Define button positions 
 BOTTOM_BUTTON_COUNT = 4
@@ -422,7 +417,9 @@ render_board(game_env.board.visible_cards)
 def update_deck_count(deck_count_text, game_env)
   deck_count_text.text = game_env.deck.card_count.to_s
 end
-# 6/5/2026 Hongle Chen - method to replace a valid set of cards on the board with new cards drawn from the deck, or remove them if the deck is empty, then re-render the board
+
+# 6/5/2026 Hongle Chen - method to replace a valid set of cards on the board with new cards drawn from the deck, 
+#   or remove them if the deck is empty, then re-render the board
 def replace_valid_set(game_env, selected_card_objects, deck_count_text)
   indices = selected_card_objects.map do |card|
     game_env.board.visible_cards.index(card)
@@ -475,6 +472,8 @@ on :mouse_down do |event|
     next
   end
 
+  if hint_btn.contains_point?(mouse_x, mouse_y) then show_popup(game_env.cheat) end
+
   if confirm_btn.contains_point?(mouse_x, mouse_y)
     if @selected_cards.length != 3
       show_popup("Please select exactly 3 cards", '#c0392b')
@@ -486,18 +485,13 @@ on :mouse_down do |event|
           selected_card_objects[1],
           selected_card_objects[2]
         )
-
         replace_valid_set(game_env, selected_card_objects, deck_count_text)
-
-
-
         @score += 1
         scoreboard_score.text = @score.to_s
         @selected_cards.each(&:deselect)
-        @selected_cards.clear
-
-        
+        @selected_cards.clear    
         show_popup("Valid Set! Score +1", '#27ae60')
+
       else
         @selected_cards.each(&:deselect)
         @selected_cards.clear
@@ -507,18 +501,15 @@ on :mouse_down do |event|
     next
   end
 
-
-
   # 6/5/2026 Hongle Chen -Draw button, draw three additional cards from the deck
   if draw_btn.contains_point?(mouse_x, mouse_y)
     draw_three_cards(game_env, deck_count_text)
     next
   end
 
-
   # 6/5/2026 Hongle Chen - Check if the click was on the Finish button, and if so, exit the application immediately
-  # click finish to exit the game and window
-  # don't use x to exit window, it will continue run in memory
+  #   click finish to exit the game and window
+  #   don't use x to exit window, it will continue run in memory
   
   if finish_btn.contains_point?(mouse_x, mouse_y)
     Thread.new do
@@ -528,11 +519,9 @@ on :mouse_down do |event|
     next
   end
   
-
-
-
   clicked_card = @active_visual_cards.find { |vc| vc.contains_point?(mouse_x, mouse_y) }
-# 6/5/2026 Hongle Chen - Check if the click was on a card, and if so toggle its selection state and update the @selected_cards tracking array accordingly
+# 6/5/2026 Hongle Chen - Check if the click was on a card, and if so toggle its selection state 
+# and update the @selected_cards tracking array accordingly
   if clicked_card
     if clicked_card.selected?
       clicked_card.deselect
@@ -547,9 +536,9 @@ on :mouse_down do |event|
 end
 # =======================================================================================================
 
-update do
 
-end
+# update do
+# end
 
 
 
