@@ -11,8 +11,8 @@ Edited 6/1/2026 by Joon Yoo - Modified initialize method to accept player inform
     when creating a player object
 Edited 6/1/2026 by Joon Yoo - Updated score display to show the player’s name along with the score.
 Edited 6/1/2026 by Joon Yoo - Added point deduction when the player selects an invalid set.
+Edited 6/2/26 by Michael Cintron - Moved card input validation into its own method
 Edited 6/6/2026 by Joon Yoo - Added tutorial mode message and disabled score display and point changes
-Edited 6/2/26 by Michael Cintron - 
 =end
 require_relative 'deck'
 require_relative 'board'
@@ -26,11 +26,11 @@ class GameEnvironment
   #   the shuffled deck
   # Modified 5/31/26 by Michael Cintron - moved deck shuffling here so the board gets
   #   the shuffled deck
-  # Runs automatically when a new GameEnvironment object is created
   # Modified 6/1/2026 by Joon Yoo - Added player ID and name parameters
   #   so GameEnvironment can create a player using user input from main.
   #   Also removed the duplicated statement: @state, @mode = :pregame, nil
   # Modified 6/5/2026 by Kameron Johnson - added :board to attr_reader so gui can read board
+  # Runs automatically when a new GameEnvironment object is created
   attr_reader :state, :mode, :board, :deck
   def initialize player_id = 1, player_name = "Player 1"
     @deck = Deck.new
@@ -47,12 +47,12 @@ class GameEnvironment
   # Modified 5/31/26 - Replaced test draw with interactive player input loop
   # Modified 6/1/26 by Hongle Chen - Implemented game loop.
   # Modified 6/1/26 by Michael Cintron - clean up comments and moved card validation into its own function
-  # Starts the game, then enters the main game loop where the player selects cards or draws.
   # Modified 6/1/2026 by Joon Yoo - Added the player’s name to the score output statement.
   # Modified 6/1/2026 by Joon Yoo - Adjusted the points awarded for finding a valid set to 3 points.
   # Modified 6/1/2026 by Joon Yoo - Added a feature that deducts 1 point when an invalid set is found.
   # Modified 6/6/2026 by Joon Yoo - Added a tutorial mode message
   # Modified 6/6/2026 by Joon Yoo - Updated tutorial mode to hide score output and prevent point addition and deduction
+  # Starts the game, then enters the main game loop where the player selects cards or draws.
   def start_game
     # return if @state == :midgame
     @state = :midgame
@@ -99,13 +99,7 @@ class GameEnvironment
 
       # Handle cheat
       if input == 'CHEAT'
-        # Get array of 3 indices or empty array if there is no set
-        cheatOutput = @board.cheat()
-        if @board.cheat.length == 3
-          print "\nHere are indexes of three cards that form a set: #{cheatOutput}\n"
-        else 
-          puts "There is not set on the board."
-        end
+        puts cheat
         next
       end
 
@@ -139,6 +133,20 @@ class GameEnvironment
         if @mode == :tutorial then puts "\nNot a valid set. Try again."
         else puts "\nNot a valid set. Try again. Point deducted."; @players[0].deductPoint(1) end
       end
+    end
+  end
+
+  # Created 6/6/26 by Micheal Cintron - Moved cheat logic into own function
+  # Provide a pretty string telling the 3 cards to make a set or if there is not set. 
+  #  
+  # return [string] telling what are three cards that make a set or a if there are no sets on the board.
+  def cheat
+    # Get array of 3 indices or empty array if there is no set
+    cheatOutput = @board.cheat()
+    if @board.cheat.length == 3
+      return "Try cards: #{cheatOutput[0]}, #{cheatOutput[1]}, and #{cheatOutput[2]}"
+    else 
+      return "There is no set on the board."
     end
   end
 
