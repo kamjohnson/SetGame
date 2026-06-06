@@ -11,6 +11,7 @@ Edited 6/1/2026 by Joon Yoo - Modified initialize method to accept player inform
     when creating a player object
 Edited 6/1/2026 by Joon Yoo - Updated score display to show the player’s name along with the score.
 Edited 6/1/2026 by Joon Yoo - Added point deduction when the player selects an invalid set.
+Edited 6/6/2026 by Joon Yoo - Added tutorial mode message and disabled score display and point changes
 Edited 6/2/26 by Michael Cintron - 
 =end
 require_relative 'deck'
@@ -50,13 +51,21 @@ class GameEnvironment
   # Modified 6/1/2026 by Joon Yoo - Added the player’s name to the score output statement.
   # Modified 6/1/2026 by Joon Yoo - Adjusted the points awarded for finding a valid set to 3 points.
   # Modified 6/1/2026 by Joon Yoo - Added a feature that deducts 1 point when an invalid set is found.
+  # Modified 6/6/2026 by Joon Yoo - Added a tutorial mode message
+  # Modified 6/6/2026 by Joon Yoo - Updated tutorial mode to hide score output and prevent point addition and deduction
   def start_game
     # return if @state == :midgame
     @state = :midgame
 
+    if @mode == :tutorial
+      puts "-----------------------------------------------------------------"
+      puts "|  This is tutorial mode. No points will be added or deducted.  |"
+      puts "-----------------------------------------------------------------"
+    end
+
     while @state == :midgame
       @board.display_board
-      puts "\n#{@players[0].playerName}'s score: #{@players[0].score}"
+      puts "#{@players[0].playerName}'s score: #{@players[0].score}" unless @mode == :tutorial
       puts "Enter 3 card indices (e.g. 1 2 3) to select a set,"
       puts "or enter 'd' to draw 3 more cards (max 18 on board)."
       puts "Current deck has #{@deck.card_count} cards left."
@@ -65,7 +74,7 @@ class GameEnvironment
 
       # Handle quit
       if input.downcase == 'q'
-        puts "Quitting game. #{@players[0].playerName}'s final score: #{@players[0].score}"
+        puts "Quitting game. #{@players[0].playerName}'s final score: #{@players[0].score}" unless @mode == :tutorial
         quit_game
         next
       end
@@ -112,22 +121,23 @@ class GameEnvironment
       selected.each_with_index { |c, i| puts "  #{indices[i]}: #{c}" }
 
       if @validator.validateCards?(selected[0], selected[1], selected[2])
-        puts "Valid set! 3 points."
-        @players[0].addPoint(3)
+        if @mode == :tutorial then puts "\nValid set!"
+        else puts "\nValid set! 3 points."; @players[0].addPoint(3) end
+        
         # remove the selected cards from the board's visible cards if they are valid set
         @board.visible_cards.reject! { |c| selected.include?(c) } 
         # Refill to 12 if deck has cards and board fell below 12
         while @board.visible_cards.length < 12 && !@deck.empty?
           @board.visible_cards.concat(@deck.draw(3))
         end
-        puts "#{@players[0].playerName}'s score: #{@players[0].score}"
+        puts "#{@players[0].playerName}'s score: #{@players[0].score}" unless @mode == :tutorial
         if @board.visible_cards.empty? && @deck.empty?
-          puts "\nNo more cards! Game over. #{@players[0].playerName}'s final score: #{@players[0].score}"
+          puts "\nNo more cards! Game over. #{@players[0].playerName}'s final score: #{@players[0].score}" unless @mode == :tutorial
           @state = :postgame
         end
       else
-        puts "Not a valid set. Try again. Point deducted."
-        @players[0].deductPoint(1)
+        if @mode == :tutorial then puts "\nNot a valid set. Try again."
+        else puts "\nNot a valid set. Try again. Point deducted."; @players[0].deductPoint(1) end
       end
     end
   end

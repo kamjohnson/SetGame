@@ -6,6 +6,7 @@ Edited 6/2/26 by Michael Cintron - Made tabbing consistent, added comments for c
 The Board class file is used for the playing table for the game
 This deals with the board displaying a set of 12 visible cards
 Edited 6/5/26 by Kameron Johnson - add method to link cards to their .png
+Edited 6/6/2026 by Joon Yoo - Added a blank line after board display for better output formatting
 =end
 require_relative 'card'
 require_relative 'deck'
@@ -31,13 +32,15 @@ class Board
 	end 
 
 	# Created 5/28/26 by Denis Zotaj
-  # Edited 6/2/26 by Michael Cintron - Standardizing documentation
+  	# Edited 6/2/26 by Michael Cintron - Standardizing documentation
+	# Edited 6/6/2026 by Joon Yoo - Added a blank line after board display
 	# Display all the cards on the board, denote with a user friendly index value.
 	def display_board
 		puts "\n - Current Board -"
 		@visible_cards.each_with_index do |card, index| 
 			puts "#{index + 1}: #{card}"
 		end
+		puts
 	end
     
 	# Created 5/28/26 by Denis Zotaj

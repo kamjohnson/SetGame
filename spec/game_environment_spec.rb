@@ -231,3 +231,20 @@ describe 'invalidInputOverIndex' do
         expect(output).to be_falsey
     end
 end
+
+# Created 6/6/2026 by Joon Yoo
+describe 'tutorial_mode' do
+  it 'displays tutorial message and hides score output' do
+    game = GameEnvironment.new(1, "Test")
+    game.choose_game_mode(:tutorial)
+
+    allow(game).to receive(:gets).and_return("q\n")
+
+    expect(game).to receive(:puts).with("-----------------------------------------------------------------")
+    expect(game).to receive(:puts).with("|  This is tutorial mode. No points will be added or deducted.  |")
+    expect(game).to receive(:puts).with("-----------------------------------------------------------------")
+    expect(game).not_to receive(:puts).with(/score:/)
+
+    game.start_game
+  end
+end
