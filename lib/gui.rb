@@ -6,6 +6,7 @@ File Edited 6/5/2026 by Kameron Johnson: Implemented Ruby2D UI layout including 
   Created 81 card '.png's for the gui.
   Implemented
 File Edited 6/6/26 by Michael Cintron - implemented hint functionality
+File Edited 6/6/26 by Michael Cintron - Breaking down code and terse-ifying
 =end
 
 require 'ruby2d'
@@ -149,8 +150,6 @@ class VisualCard
     )
   end
 
-
-
   
   # 6/5/2026 Hongle Chen - method to check if a given mouse click is within the bounds of this card's image
   # 
@@ -163,9 +162,7 @@ class VisualCard
   end
 
   # 6/5/2026 Hongle Chen - method to toggle the selected state of the card and update the highlight visibility accordingly
-  def selected?
-    @selected
-  end
+  def selected? () @selected end
 
   # 6/5/2026 Hongle Chen - method to set the card as selected and show the highlight
   def select
@@ -217,24 +214,24 @@ end
 @popup_active = false
 @score = 0
 
-game_env = GameEnvironment.new
 @game_env = GameEnvironment.new
 @validator = SetValidator.new
 
 # Created by Kameron Johnson on 6/5/2026
+# Edited 6/6/26 Michael Cintron - removed parameter
 # Renders all board cards to the Ruby2D grid layout
 # 
 # @param current_board_cards [Array<Card>] Array of logical card objects currently on board
 # @return [void] Updates @active_visual_cards with new card images displayed on screen
-def render_board(current_board_cards)
+def render_board
   # Clear any existing card images from the screen first
   @active_visual_cards.each(&:remove)
   @active_visual_cards.clear
   @selected_cards.clear
   # 6/5/2026 Hongle Chen - Clear selected cards tracking when re-rendering the board to avoid stale selections
 
-  # Loop through the actual logical card objects on the board
-  current_board_cards.each_with_index do |card, index|
+  # Loop through the card objects on the board
+  @game_env.board.visible_cards.each_with_index do |card, index|
     # Grid calculation: row is (index / 4), column is (index % 4)
     row = index / CARDS_PER_ROW
     col = index % CARDS_PER_ROW
@@ -308,8 +305,8 @@ def handle_confirm
   else
     selected_cards = @selected_cards.map(&:card_data)
 
-    if @validator.validateCards? selected_cards[0], selected_cards[1], selected_cards[2] 
-      replace_valid_set(@game_env, selected_cards, @deck_count_text)
+    if @validator.validateCards? selected_cards[0], selected_cards[1], selected_cards[2]
+      replace_valid_set(selected_cards)
       @score += 1
       @scoreboard_score.text = @score.to_s
       @selected_cards.each(&:deselect)
@@ -389,7 +386,7 @@ deck_label = Text.new(
 )
 
 @deck_count_text = Text.new(
-  game_env.deck.card_count.to_s,
+  @game_env.deck.card_count.to_s,
   style: 'bold',
   size: 24,
   x: 170,
@@ -408,8 +405,6 @@ scoreboard_name = Text.new(
   z: 6
 )
 
-
-#TODO: pass in player score
 @scoreboard_score = Text.new(
   @score.to_s,
   style: 'bold',
@@ -419,8 +414,6 @@ scoreboard_name = Text.new(
   z: 6
 )
 
-
-# to be developed later
 hint_btn = Button.new x: hint_btn_x_pos, y: DASHBOARD_START_Y, width: BTN_WIDTH,
 height: BTN_HEIGHT, text: "Hint"
 
@@ -433,55 +426,40 @@ height: BTN_HEIGHT, text: "FINISH"
 confirm_btn = Button.new x: confirm_btn_x_pos, y: DASHBOARD_START_Y,
 width: BTN_WIDTH, height: BTN_HEIGHT, text: "Confirm", size: 22
 
+
 #==============================Render Initial Board===============================================================
 
-
 # Render the cards onto the grid after the environment and methods are established
-render_board(game_env.board.visible_cards)
+render_board
 
 # =======================================Draw Cards===============================================================
 # 6/5/2026 Hongle Chen - method to update the deck count display on the dashboard whenever cards are drawn from the deck
-def update_deck_count(deck_count_text, game_env)
-  @deck_count_text.text = game_env.deck.card_count.to_s
-end
+# Edited on 6/6/26 by Michael Cintron - made into single line
+def update_deck_count () @deck_count_text.text = @game_env.deck.card_count.to_s end
 
 # 6/5/2026 Hongle Chen - method to replace a valid set of cards on the board with new cards drawn from the deck, 
 #   or remove them if the deck is empty, then re-render the board
-def replace_valid_set(game_env, selected_cards, deck_count_text)
-  indices = selected_cards.map do |card|
-    game_env.board.visible_cards.index(card)
-  end.compact.sort.reverse
+# Edited 6/6/26 Michael Cintron - Removed game_env parameter and using board's replace card logic instead
+def replace_valid_set(selected_cards)
+  @game_env.board.replace_cards selected_cards, @game_env.deck
 
-  indices.each do |index|
-    if game_env.deck.card_count > 0
-      drawn_card = game_env.deck.draw(1).first
-      game_env.board.visible_cards[index] = drawn_card if drawn_card
-    else
-      game_env.board.visible_cards.delete_at(index)
-    end
-  end
-
-  update_deck_count(deck_count_text, game_env)
-  render_board(game_env.board.visible_cards)
+  update_deck_count
+  render_board
 end
 
 # 6/5/2026 Hongle Chen - method to draw 3 additional cards from the deck onto the board and re-render the layout
-def draw_three_cards()
+# Edited 6/6/26 Michael Cintron - made more terse
+def draw_three_cards
   return if @game_env.deck.card_count <= 0
 
   max_cards_on_board = 18
-
   available_slots = max_cards_on_board - @game_env.board.visible_cards.length
 
-  return if available_slots <= 0
-
-  cards_to_draw = [3, @game_env.deck.card_count].min
-  new_cards = @game_env.deck.draw(cards_to_draw)
-
-  @game_env.board.visible_cards.concat(new_cards)
-
-  update_deck_count(@deck_count_text, @game_env)
-  render_board(@game_env.board.visible_cards)
+  return if available_slots <= 0  
+  
+  @game_env.draw_three_cards
+  update_deck_count
+  render_board
 end
 # =================================================================================================================
 
@@ -492,23 +470,21 @@ on :mouse_down do |event|
   mouse_x = event.x
   mouse_y = event.y
 
-  if @popup_active && @popup_button.contains_point?(mouse_x, mouse_y) then close_popup end
+  close_popup if @popup_active && @popup_button.contains_point?(mouse_x, mouse_y)
 
-  if hint_btn.contains_point?(mouse_x, mouse_y) then show_popup(game_env.cheat) end
+  show_popup(@game_env.cheat) if hint_btn.contains_point?(mouse_x, mouse_y)
 
-  if confirm_btn.contains_point?(mouse_x, mouse_y)
-    show_popup handle_confirm
-  end
+  show_popup(handle_confirm) if confirm_btn.contains_point?(mouse_x, mouse_y)
   
 
   # 6/5/2026 Hongle Chen -Draw button, draw three additional cards from the deck
-  if draw_btn.contains_point?(mouse_x, mouse_y) then draw_three_cards end
+  draw_btn.contains_point?(mouse_x, mouse_y) ? draw_three_cards :
 
   # 6/5/2026 Hongle Chen - exit the application immediately
-  if finish_btn.contains_point?(mouse_x, mouse_y)
+  if finish_btn.contains_point? mouse_x, mouse_y
     Thread.new do
       sleep 0.05
-      Process.exit!(0)
+      Process.exit! 0
     end
   end
   
@@ -518,7 +494,7 @@ on :mouse_down do |event|
   if clicked_card
     if clicked_card.selected?
       clicked_card.deselect
-      @selected_cards.delete(clicked_card)
+      @selected_cards.delete clicked_card
     else
       if @selected_cards.length < 3
         clicked_card.select

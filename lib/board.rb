@@ -45,6 +45,7 @@ class Board
     
 	# Created 5/28/26 by Denis Zotaj
 	# Edited 6/2/26 by Michael Cintron - Standardizing documentation
+	# Edited 6/6/26 Michael Cintron - modified to only draw new cards if the board has less than 12 cards
 	# Remove the cards given in set_cards from the board and draw 3 new cards
 	# to replace them, if there are still cards in the deck.
 	# 
@@ -54,6 +55,7 @@ class Board
 	# @return [Array] - The cards on the board with the 3 replacement cards
 	def replace_cards(set_cards, deck)
 			@visible_cards.reject! {|card| set_cards.include?(card)}
+			return if @visible_cards.length >= 12
 			new_cards = deck.draw(3)
 			@visible_cards.concat(new_cards) unless new_cards.empty?
 	end
