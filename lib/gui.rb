@@ -7,6 +7,8 @@ File Edited 6/5/2026 by Kameron Johnson: Implemented Ruby2D UI layout including 
   Implemented
 File Edited 6/6/26 by Michael Cintron - implemented hint functionality
 File Edited 6/6/26 by Michael Cintron - Breaking down code and terse-ifying
+Edited 6/6/2026 by Joon Yoo - Updated the scoring feature
+Edited 6/6/2026 by Joon Yoo - Fixed the bug where the popup and a card were being clicked at the same time
 =end
 
 require 'ruby2d'
@@ -295,7 +297,8 @@ def show_popup(message, color = '#27ae60')
 end
 
 
-# Created 6/6/26 by Hongle Chen and Michael Cintron 
+# Created 6/6/26 by Hongle Chen and Michael Cintron
+# Edited 6/6/2026 by Joon Yoo - Updated the scoring feature. The score won’t be deducted when it is 0
 # Create a message based on if the user created a set, an invalid set, or not enough selected cards
 # 
 # return [string] the message the user receives upon clicking the confirm button.
@@ -307,15 +310,20 @@ def handle_confirm
 
     if @validator.validateCards? selected_cards[0], selected_cards[1], selected_cards[2]
       replace_valid_set(selected_cards)
-      @score += 1
+      @score += 3
       @scoreboard_score.text = @score.to_s
       @selected_cards.each(&:deselect)
       @selected_cards.clear    
-      return "Valid Set! Score +1"
+      return "Valid Set! Score +3"
     else
       @selected_cards.each(&:deselect)
       @selected_cards.clear
-      return "Not a valid Set."
+      if @score == 0 then "Not a valid Set. Score is already 0."
+      else
+        @score -= 1
+        @scoreboard_score.text = @score.to_s
+        "Not a valid Set. Score -1"
+      end
     end
   end
 end
@@ -466,11 +474,15 @@ end
 
 # ====================== Handle mouse clicks for card selection and button interactions ===========================
 
+#Edited 6/6/2026 by Joon Yoo - Fixed the bug where the popup and a card were being clicked at the same time
 on :mouse_down do |event|
   mouse_x = event.x
   mouse_y = event.y
 
-  close_popup if @popup_active && @popup_button.contains_point?(mouse_x, mouse_y)
+  if @popup_active
+    close_popup if @popup_button.contains_point?(mouse_x, mouse_y)
+    next
+  end
 
   show_popup(@game_env.cheat) if hint_btn.contains_point?(mouse_x, mouse_y)
 
