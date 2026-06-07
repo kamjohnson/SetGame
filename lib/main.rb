@@ -16,8 +16,12 @@ Edited on 6/4/2026 by Joon Yoo - Added manual and player information input
 Edited on 6/4/2026 by Joon Yoo - Reworked menu flow into main menu and game mode selection
 Edited on 6/5/2026 by Joon Yoo - Updated replay flow and input handling
 Edited on 6/5/2026 by Joon Yoo - Updated method documentation, single line comments, and file formatting
+Edited on 6/6/2026 by Joon Yoo - Moved player information input from program startup to game mode setup
+Edited on 6/6/2026 by Joon Yoo - Updated methods to start games without passing player information
+Edited on 6/6/2026 by Joon Yoo - Added multiplayer setup
 =end 
 require_relative 'game_environment'
+require_relative 'player'
 
 class MainMenu
   # Created 6/4/2026 by Joon Yoo
@@ -41,17 +45,16 @@ class MainMenu
   end
 
   # Created 6/4/2026 by Joon Yoo
-  # Handles game mode selection, creates a GameEnvironment object, and starts the game.
-  #
-  # Prompts the player to choose game mode.
-  # If the player enters invalid input, keeps asking until a valid mode is selected.
-  #
-  # @param [Integer] player_id - The player's ID number
-  # @param [String] player_name - The player's name or nickname
+  # Edited 6/6/2026 by Joon Yoo - Removed parameters
+  # Edited 6/6/2026 by Joon Yoo - Moved player information input into this method
+  # Edited 6/6/2026 by Joon Yoo - Added multiplayer setup
+  # Handles game mode selection, creates player objects, creates a GameEnvironment object,
+  # and starts the game.
   #
   # @return [Boolean] true after a game session
-  def enter_game player_id, player_name
+  def enter_game
     choice = nil
+    players = []
 
     # Displays the game mode options and keeps asking until the player enters valid input.
     until ["1", "2", "3"].include? choice
@@ -71,8 +74,19 @@ class MainMenu
     when "2" then :singleplayer
     when "3" then :multiplayer end
 
-    # Creates a game session using the player's information.
-    game = GameEnvironment.new(player_id, player_name)
+    # Creates player objects based on the selected game mode.
+    if mode == :multiplayer then players = get_multiplayers
+    else
+      print "\nPlease enter your player ID\n> "
+      player_id = gets.chomp.strip.to_i
+      print "\nPlease enter your name or nickname\n> "
+      player_name = gets.chomp.strip
+
+      players = [Player.new(player_id, player_name)]
+    end
+
+    # Creates the game environment using the players array.
+    game = GameEnvironment.new players
 
     # Applies the selected game mode and starts the game.
     game.choose_game_mode mode
@@ -80,21 +94,53 @@ class MainMenu
     true
   end
 
+  # Created 6/6/2026 by Joon Yoo
+  # Gets player information for multiplayer mode and creates player objects.
+  #
+  # @return [Array] array of Player objects
+  def get_multiplayers
+    players = []
+    player_amount = 0
+
+    # Keeps asking until the user enters at least 2 players.
+    until player_amount >= 2
+      print "\nHow many players will play? Enter at least 2\n> "
+      player_amount = gets.chomp.strip.to_i
+
+      if player_amount < 2
+        puts "Invalid input. Multiplayer mode needs at least 2 players."
+      end
+    end
+
+    player_number = 1
+
+    # Gets each player's ID and name and adds the player to the players array.
+    until player_number > player_amount
+      puts "\nFor player #{player_number}"
+      print "\nPlease enter your player ID\n> "
+      player_id = gets.chomp.strip.to_i
+      print "\nPlease enter your name or nickname\n> "
+      player_name = gets.chomp.strip
+
+      players << Player.new(player_id, player_name)
+      player_number += 1
+    end
+    players
+  end
+
   # Created by Kameron Johnson on 6/2/2026
   # Edited 6/4/2026 by Joon Yoo - Moved game mode selection to enter_game method
   # Edited 6/4/2026 by Joon Yoo - Renamed the method
   # Edited 6/4/2026 by Joon Yoo - Added game manual option and player information parameters
   # Edited 6/5/2026 by Joon Yoo - Updated the method to leave the main menu
+  # Edited 6/6/2026 by Joon Yoo - Removed parameters
   # Presents the main menu and handles the user's main menu selection.
   #
   # Displays the main menu until the player starts a game or chooses to quit.
   # If the player starts a game, the method exits the main menu so the replay prompt can run.
   #
-  # @param [Integer] player_id - The player's ID number
-  # @param [String] player_name - The player's name or nickname
-  #
   # @return [Boolean] true if a game was played, false if no game session started.
-  def display_main_menu player_id, player_name
+  def display_main_menu
     choice = nil
     game_was_played = false
 
@@ -109,7 +155,7 @@ class MainMenu
       choice = gets.chomp.strip
     
       # Delegates the player's selection to the menu handler.
-      game_was_played = handle_menu choice, player_id, player_name
+      game_was_played = handle_menu choice
 
       # Leaves the main menu after a game session so the replay prompt can run.
       choice = "3" if game_was_played == true
@@ -123,19 +169,18 @@ class MainMenu
   # Edited 6/4/2026 by Joon Yoo - Changed menu input handling from Integer to String
   # Edited 6/4/2026 by Joon Yoo - Moved GameEnvironment creation and game mode selection to enter_game method
   # Edited 6/4/2026 by Joon Yoo - Updated routing to support start game, manual, quit, and invalid input
+  # Edited 6/6/2026 by Joon Yoo - Removed parameters for user information
   # Routes the user's menu selection to the appropriate game action.
   #
   # @param [String] choice - the validated menu option selected by the user
-  # @param [Integer] player_id - The player's ID number
-  # @param [String] player_name - The player's name or nickname
   #
   # @return [Boolean] true if a game session started, false if no game session started.
-  def handle_menu choice, player_id, player_name
+  def handle_menu choice
     game_was_played = false
 
     # Routes each main menu option to the correct action.
     case choice
-    when "1" then game_was_played = enter_game player_id, player_name
+    when "1" then game_was_played = enter_game
     when "2" then display_manual
     when "3" then puts "Quitting game. Goodbye."
     else puts "Invalid choice. Please select a valid option." end
@@ -152,6 +197,8 @@ end
 # Edited 6/5/2026 by Joon Yoo - Removed the loop control using choice variable
 # Edited 6/5/2026 by Joon Yoo - Updated the replay loop to use game_was_played as the loop condition
 # Edited 6/5/2026 by Joon Yoo - Fixed loop flow to go directly to game mode selection after the game
+# Edited 6/6/2026 by Joon Yoo - Moved player information input into game mode setup
+# Edited 6/6/2026 by Joon Yoo - Updated execution flow to call display_main_menu and enter_game without parameters
 #
 # This script manages the core application lifecycle. It instantiates the 
 # user interface and maintains the execution loop that keeps the application 
@@ -162,17 +209,11 @@ if __FILE__ == $0
   puts "|  Welcome to the Game of Set!  |"
   puts "---------------------------------"
 
-  # Gets the player's ID and name before starting the game.
-  print "\nPlease enter your player ID\n> "
-  player_id = gets.chomp.strip.to_i
-  print "\nPlease enter your name or nickname\n> "
-  player_name = gets.chomp.strip
-
   # Creates the menu object only when this file is run directly.
   menu = MainMenu.new
 
   # Displays the main menu for the game session.
-  game_was_played = menu.display_main_menu player_id, player_name
+  game_was_played = menu.display_main_menu
 
   # Replays the game directly from game mode selection after the game.
   while game_was_played
@@ -180,7 +221,7 @@ if __FILE__ == $0
     answer = gets.chomp.strip.downcase
 
     # Starts another game if the player chooses "y" or "yes", otherwise exits the program.
-    if ["y", "yes"].include? answer then game_was_played = menu.enter_game player_id, player_name
+    if ["y", "yes"].include? answer then game_was_played = menu.enter_game
     else game_was_played = false; puts "Thanks for playing! Goodbye." end
   end
 end

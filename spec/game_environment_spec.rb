@@ -3,6 +3,7 @@
 # Edited 5/25/2026 - Added test for #initialize, #start_game, and #quit_game methods
 # Edited 5/26/2026 - Added test for #pause_game method
 # Edited 5/27/2026 - Added test for #handle_pause_selection and #pause_action methods
+# Edited 6/6/2026 by Joon Yoo - Removed all tests related to pause feature
 # RSpec tests for GameEnvironment class
 require 'game_environment'
 describe GameEnvironment do
@@ -18,6 +19,14 @@ describe GameEnvironment do
 
     it 'initializes with nil mode' do
       game = GameEnvironment.new
+      expect(game.mode).to eq(nil)
+    end
+
+    it 'initializes with an array of players' do
+      players = [Player.new(1, "Test 1"), Player.new(2, "Test 2")]
+      game = GameEnvironment.new(players)
+
+      expect(game.state).to eq(:pregame)
       expect(game.mode).to eq(nil)
     end
   end
@@ -45,29 +54,6 @@ describe GameEnvironment do
   #     expect(game.state).to eq(:midgame)
   #   end
   # end
-
-  # Created 5/26/2026 by Kameron Johnson
-  # Modified 6/1/26 by Michael Cintron - commented out because game.start game now runs the game and inteferes with testing
-  # Tests pause_game method
-  # describe '#pause_game' do
-  #   it 'sets state to paused when game is midgame' do
-  #     game = GameEnvironment.new
-
-  #     game.start_game
-  #     game.pause_game
-
-  #     expect(game.state).to eq(:paused)
-  #   end
-
-  #   it 'does not pause game if not midgame' do
-  #     game = GameEnvironment.new
-
-  #     game.pause_game
-
-  #     expect(game.state).to eq(:pregame)
-  #   end
-  # end
-
   
   # Created 5/25/2026 by Kameron Johnson
   # Modified 6/1/26 by Michael Cintron - commented out because game.start game now runs the game and inteferes with testing
@@ -105,61 +91,6 @@ describe GameEnvironment do
       expect(game.mode).to eq(:timed)
     end
   end
-
-  # Created 5/27/2026 by Kameron Johnson
-  # Tests handle_pause_selection method
-  describe '#handle_pause_selection' do
-
-    it 'returns :resume for input 1' do
-      game = GameEnvironment.new
-
-      result = game.handle_pause_selection("1")
-
-      expect(result).to eq(:resume)
-    end
-
-    it 'returns :restart for input 2' do
-      game = GameEnvironment.new
-
-      result = game.handle_pause_selection("2")
-
-      expect(result).to eq(:restart)
-    end
-
-    it 'returns :change_mode for input 3' do
-      game = GameEnvironment.new
-
-      result = game.handle_pause_selection("3")
-
-      expect(result).to eq(:change_mode)
-    end
-
-    it 'returns :quit for input 4' do
-      game = GameEnvironment.new
-
-      result = game.handle_pause_selection("4")
-
-      expect(result).to eq(:quit)
-    end
-
-    it 'yields selected action when block is given' do
-      game = GameEnvironment.new
-
-      expect do |b|
-        game.handle_pause_selection("1", &b)
-      end.to yield_with_args(:resume)
-    end
-
-    it 'returns nil for invalid input' do
-      game = GameEnvironment.new
-
-      result = game.handle_pause_selection("9")
-
-      expect(result).to eq(nil)
-    end
-  end
-
-end
 
 # Created on 6/1/26 by Michael Cintron
 describe 'invalidInputEmpty' do
@@ -235,7 +166,7 @@ end
 # Created 6/6/2026 by Joon Yoo
 describe 'tutorial_mode' do
   it 'displays tutorial message and hides score output' do
-    game = GameEnvironment.new(1, "Test")
+    game = GameEnvironment.new([Player.new(1, "Test")])
     game.choose_game_mode(:tutorial)
 
     allow(game).to receive(:gets).and_return("q\n")
@@ -246,5 +177,47 @@ describe 'tutorial_mode' do
     expect(game).not_to receive(:puts).with(/score:/)
 
     game.start_game
+  end
+end
+
+# Created 6/6/2026 by Joon Yoo
+  describe '#select_current_player' do
+    it 'returns the selected multiplayer player' do
+      players = [Player.new(1, "Test 1"), Player.new(2, "Test 2")]
+      game = GameEnvironment.new(players)
+
+      allow(game).to receive(:gets).and_return("2\n")
+      allow(game).to receive(:puts)
+      allow(game).to receive(:print)
+      
+      selected_player = game.select_current_player
+      expect(selected_player.playerName).to eq("Test 2")
+      expect(selected_player.playerID).to eq(2)
+    end
+
+    it 'asks again when the player number is invalid' do
+      players = [Player.new(1, "Test 1"), Player.new(2, "Test 2")]
+      game = GameEnvironment.new(players)
+
+      allow(game).to receive(:gets).and_return("3\n", "1\n")
+      allow(game).to receive(:puts)
+      allow(game).to receive(:print)
+
+      expect(game).to receive(:puts).with("Invalid player number.")
+      selected_player = game.select_current_player
+      expect(selected_player.playerName).to eq("Test 1")
+    end
+  end
+
+  # Created 6/6/2026 by Joon Yoo
+  describe '#display_multiplayer_score' do
+    it 'displays all multiplayer scores' do
+      players = [Player.new(1, "Test 1"), Player.new(2, "Test 2")]
+      game = GameEnvironment.new(players)
+
+      expect(game).to receive(:puts).with("1. Test 1 | ID: 1 | Score: 0")
+      expect(game).to receive(:puts).with("2. Test 2 | ID: 2 | Score: 0")
+      game.display_multiplayer_score
+    end
   end
 end

@@ -13,6 +13,11 @@ Edited 6/1/2026 by Joon Yoo - Updated score display to show the player’s name 
 Edited 6/1/2026 by Joon Yoo - Added point deduction when the player selects an invalid set.
 Edited 6/2/26 by Michael Cintron - Moved card input validation into its own method
 Edited 6/6/2026 by Joon Yoo - Added tutorial mode message and disabled score display and point changes
+Edited 6/6/2026 by Joon Yoo - Removed unused pause methods (pause_game, handle_pause_selection, pause_action)
+Edited 6/6/2026 by Joon Yoo - Updated initialize to accept an array of players for multiplayer mode
+Edited 6/6/2026 by Joon Yoo - Created new methods for multiplayer mode (select_current_player, display_multiplayer_score)
+Edited 6/6/2026 by Joon Yoo - Updated start_game to support multiplayer and score display
+Edited 6/6/2026 by Joon Yoo - Updated scoring to apply points to the current player
 =end
 require_relative 'deck'
 require_relative 'board'
@@ -24,19 +29,18 @@ class GameEnvironment
   # Created 5/25/2026 by Kameron Johnson
   # Modified 5/31/26 by Michael Cintron - moved deck shuffling here so the board gets
   #   the shuffled deck
-  # Modified 5/31/26 by Michael Cintron - moved deck shuffling here so the board gets
-  #   the shuffled deck
   # Modified 6/1/2026 by Joon Yoo - Added player ID and name parameters
   #   so GameEnvironment can create a player using user input from main.
   #   Also removed the duplicated statement: @state, @mode = :pregame, nil
   # Modified 6/5/2026 by Kameron Johnson - added :board to attr_reader so gui can read board
+  # Modified 6/6/2026 by Joon Yoo - Updated initialize to accept an array of players
   # Runs automatically when a new GameEnvironment object is created
   attr_reader :state, :mode, :board, :deck
-  def initialize player_id = 1, player_name = "Player 1"
+  def initialize players = [Player.new(1, "Player 1")]
     @deck = Deck.new
     @deck.shuffle!
     @board = Board.new @deck
-    @players = [Player.new(player_id, player_name)]
+    @players = players
     @validator = SetValidator.new
     @state, @mode = :pregame, nil
   end
@@ -52,6 +56,9 @@ class GameEnvironment
   # Modified 6/1/2026 by Joon Yoo - Added a feature that deducts 1 point when an invalid set is found.
   # Modified 6/6/2026 by Joon Yoo - Added a tutorial mode message
   # Modified 6/6/2026 by Joon Yoo - Updated tutorial mode to hide score output and prevent point addition and deduction
+  # Modified 6/6/2026 by Joon Yoo - Added multiplayer current player selection
+  # Modified 6/6/2026 by Joon Yoo - Updated score changes to use the current player
+  # Modified 6/6/2026 by Joon Yoo - Added multiplayer final score display
   # Starts the game, then enters the main game loop where the player selects cards or draws.
   def start_game
     # return if @state == :midgame
@@ -65,8 +72,16 @@ class GameEnvironment
 
     while @state == :midgame
       @board.display_board
-      puts "#{@players[0].playerName}'s score: #{@players[0].score}" unless @mode == :tutorial
-      puts "Enter 3 card indices (e.g. 1 2 3) to select a set,"
+      current_player = nil
+
+      # Selects the current player in multiplayer mode, otherwise uses the single player.
+      if @mode == :multiplayer then current_player = select_current_player
+      else
+        current_player = @players[0]
+        puts "#{current_player.playerName}'s score: #{current_player.score}" unless @mode == :tutorial
+      end
+
+      puts "\nEnter 3 card indices (e.g. 1 2 3) to select a set,"
       puts "or enter 'd' to draw 3 more cards (max 18 on board)."
       puts "Current deck has #{@deck.card_count} cards left."
       print "> "
@@ -74,7 +89,12 @@ class GameEnvironment
 
       # Handle quit
       if input.downcase == 'q'
-        puts "Quitting game. #{@players[0].playerName}'s final score: #{@players[0].score}" unless @mode == :tutorial
+        # Displays all player scores when quitting multiplayer mode.
+        if @mode == :multiplayer then puts "\nFinal scores:"; display_multiplayer_score
+        else
+          puts "Quitting game. #{current_player.playerName}'s final score: #{current_player.score}" unless @mode == :tutorial
+        end
+        
         quit_game
         next
       end
@@ -110,13 +130,14 @@ class GameEnvironment
       # out put the selection to player what they selected last round
       # i-1 because display are 1-12, but index is 0-11
       selected = indices.map { |i| @board.visible_cards[i - 1] }
-      puts "\nYou selected:"
+      puts "\n#{current_player.playerName} selected:"
        # for each selected card, print out the index and the card itself 
       selected.each_with_index { |c, i| puts "  #{indices[i]}: #{c}" }
 
       if @validator.validateCards?(selected[0], selected[1], selected[2])
+        # Adds points to the current player unless the game is in tutorial mode.
         if @mode == :tutorial then puts "\nValid set!"
-        else puts "\nValid set! 3 points."; @players[0].addPoint(3) end
+        else puts "\nValid set! 3 points."; current_player.addPoint(3) end
         
         # remove the selected cards from the board's visible cards if they are valid set
         @board.visible_cards.reject! { |c| selected.include?(c) } 
@@ -124,14 +145,20 @@ class GameEnvironment
         while @board.visible_cards.length < 12 && !@deck.empty?
           draw_three_cards
         end
-        puts "#{@players[0].playerName}'s score: #{@players[0].score}" unless @mode == :tutorial
+        puts "#{current_player.playerName}'s score: #{current_player.score}" unless @mode == :tutorial
         if @board.visible_cards.empty? && @deck.empty?
-          puts "\nNo more cards! Game over. #{@players[0].playerName}'s final score: #{@players[0].score}" unless @mode == :tutorial
+          if @mode == :multiplayer
+            puts "\nNo more cards! Game over.\nFinal scores:"
+            display_multiplayer_score
+          else
+            puts "\nNo more cards! Game over. #{current_player.playerName}'s final score: #{current_player.score}" unless @mode == :tutorial
+          end
           @state = :postgame
         end
       else
+        # Deducts points from the current player unless the game is in tutorial mode.
         if @mode == :tutorial then puts "\nNot a valid set. Try again."
-        else puts "\nNot a valid set. Try again. Point deducted."; @players[0].deductPoint(1) end
+        else puts "\nNot a valid set. Try again. Point deducted."; current_player.deductPoint(1) end
       end
     end
   end
@@ -174,13 +201,6 @@ class GameEnvironment
     # return true if all checks passed
     true
   end
-  
-  # Created 5/26/2026 by Kameron Johnson
-  # Pauses the game
-  def pause_game
-    return unless @state == :midgame
-    @state = :paused
-  end
 
   # Created 5/25/2026 by Kameron Johnson
   # Ends the game
@@ -190,21 +210,6 @@ class GameEnvironment
   # Allows the user to select a game mode
   def choose_game_mode(mode); @mode = mode end
 
-  # Created 5/27/2026 by Kameron Johnson
-  # Handles the pause menu and returns the user's selection using a block
-  def handle_pause_selection(choice)
-    action = pause_action(choice)
-    yield(action) if block_given?
-    action
-  end
-
-  #Created 5/27/2026 by Kameron Johnson
-  # Maps user input to corresponding actions for the pause menu
-  def pause_action(choice)
-    case choice
-    when "1" then :resume; when "2" then :restart; when "3" then :change_mode;  when "4" then :quit; else nil end
-  end
-
   # Created 6/6/26 Michael Cintron
   # draw 3 cards from the deck and put them onto the board
   #
@@ -213,4 +218,37 @@ class GameEnvironment
     @board.visible_cards.concat @deck.draw 3 if @deck.card_count > 0 
   end
 
+  # Created 6/6/2026 by Joon Yoo
+  # Displays all players in multiplayer mode and returns the player selected
+  # for the current turn.
+  #
+  # @return [Player] the selected player for the current turn
+  def select_current_player
+    # Displays all players and their current scores.
+    puts "- Players -"
+    display_multiplayer_score
+    current_player = nil
+    
+    # Keeps asking until the user enters a valid player number.
+    until current_player
+      print "\nEnter player number if you find set\n> "
+      number = gets.chomp.strip.to_i
+
+      if number >= 1 && number <= @players.length then current_player = @players[number - 1]
+      else puts "Invalid player number." end
+    end
+    current_player
+  end
+
+  # Created 6/6/2026 by Joon Yoo
+  # Displays each player's number, name, ID, and score.
+  #
+  # @return [nil]
+  def display_multiplayer_score
+    # Uses each player's array index as the displayed player number.
+    @players.each_index do |i|
+      player = @players[i]
+      puts "#{i + 1}. #{player.playerName} | ID: #{player.playerID} | Score: #{player.score}"
+    end
+  end
 end
